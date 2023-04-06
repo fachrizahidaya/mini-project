@@ -9,8 +9,8 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      User.hasMany(models.Blog)
-      User.hasMany(models.Like)
+      User.hasMany(models.Blog);
+      User.hasMany(models.Like);
     }
   }
   User.init(
@@ -45,7 +45,10 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
         defaultValue: false,
       },
-      role: DataTypes.BOOLEAN,
+      role: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: true,
+      },
     },
     {
       sequelize,
