@@ -1,7 +1,7 @@
 const router = require("express").Router();
-const checkRole = require("../../middleware/checkRole");
-const verifyToken = require("../../middleware/verifyToken");
-const { authAdmin } = require("../../controllers/index");
+const { checkRole } = require("../../middleware/checkRole");
+const { authAdmin } = require("../../controllers");
+const { verifyToken } = require("../../middleware/verifyToken");
 
 router.post("/register", authAdmin.register);
 router.post("/verify", verifyToken, authAdmin.verification);
