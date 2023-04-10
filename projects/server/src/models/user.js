@@ -25,7 +25,7 @@ module.exports = (sequelize, DataTypes) => {
       email: {
         type: DataTypes.STRING,
         allowNull: false,
-        unique: "email",
+        // unique: "email",
         validate: {
           isEmail: true,
         },
@@ -35,7 +35,7 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         allowNull: false,
         validate: {
-          is: /^.*(?=.*[a-zA-Z])(?=.*\d).*$/i,
+          // is: /^.*(?=.*[a-zA-Z])(?=.*\d).*$/i,
           len: [6],
         },
       },

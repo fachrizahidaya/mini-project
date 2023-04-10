@@ -1,4 +1,4 @@
 const router = require("express").Router();
-const { profile } = require("../controllers/index");
+const { profileUser } = require("../../controllers/index");
 
 module.exports = router;

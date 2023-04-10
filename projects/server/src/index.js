@@ -26,6 +26,8 @@ app.use(bearerToken());
 // ===========================
 // NOTE : Add your routes here
 
+const { authUser,profileUser } = require("./routers");
+
 app.get("/api", (req, res) => {
   res.send(`Hello, this is my API`);
 });
