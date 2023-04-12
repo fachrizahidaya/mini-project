@@ -95,7 +95,9 @@ module.exports = {
       const token = jwt.sign(payload, secretKey);
       const isValid = await bcrypt.compare(password, isAccountExist.password);
       if (!isValid) throw "Incorrect Password";
-      res.status(200).send({ message: "Login success", isAccountExist, token });
+      res
+        .status(200)
+        .send({ message: "Welcome to Blog", isAccountExist, token });
     } catch (err) {
       res.status(400).send(err);
     }

@@ -5,6 +5,7 @@ const blogUser = require("../controllers/user/blog");
 // admin
 const authAdmin = require("../controllers/admin/auth");
 const catAdmin = require("../controllers/admin/category");
+const blogAdmin = require("../controllers/admin/blog");
 
 module.exports = {
   authUser,
@@ -12,4 +13,5 @@ module.exports = {
   blogUser,
   authAdmin,
   catAdmin,
+  blogAdmin,
 };

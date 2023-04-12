@@ -29,6 +29,7 @@ const {
   blogUser,
   authAdmin,
   catAdmin,
+  blogAdmin,
 } = require("./routers");
 
 // ===========================
@@ -42,6 +43,7 @@ app.use("/blogUser", blogUser);
 // admin
 app.use("/authAdmin", authAdmin);
 app.use("/catAdmin", catAdmin);
+app.use("/blogAdmin", blogAdmin);
 
 app.get("/api", (req, res) => {
   res.send(`Hello, this is my API`);
