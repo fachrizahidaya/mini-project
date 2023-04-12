@@ -5,4 +5,5 @@ const authAdmin = require("./admin/auth")
 module.exports = {
   authUser,
   profileUser,
+  authAdmin
 };

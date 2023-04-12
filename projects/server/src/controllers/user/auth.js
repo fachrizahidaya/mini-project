@@ -7,14 +7,13 @@ const handlebars = require("handlebars");
 const secretKey = process.env.TOKEN_SECRET_KEY;
 const transporter = require("../../middleware/transporter");
 const { Op } = require("sequelize");
+const nodemailer = require("nodemailer");
+const path = require("path");
 
 module.exports = {
   register: async (req, res) => {
     try {
       const { username, email, phone, password, confirmPassword } = req.body;
-      if (password !== confirmPassword)
-        throw "Password and confirm password are not match";
-      if (password.length !== 6) throw "Password minimum 6 characters";
       const salt = await bcrypt.genSalt();
       const hashPassword = await bcrypt.hash(password, salt);
       const data = await user.create({
@@ -23,11 +22,26 @@ module.exports = {
         phone,
         password: hashPassword,
       });
+
+      // const afterRegistered = moment()
+      //   .add(24, "hours")
+      //   .format("YYYY-MM-DD HH:mm:ss");
+
+      // schedule.scheduleJob(
+      //   afterRegistered,
+      //   async () =>
+      //     await user.destroy({
+      //       where: {
+      //         id: data.id,
+      //       },
+      //     })
+      // );
+
       const token = jwt.sign({ email: email }, secretKey, { expiresIn: "1h" });
       const tempEmail = fs.readFileSync("./src/template/email.html", "utf-8");
       const tempCompile = handlebars.compile(tempEmail);
       const tempResult = tempCompile({
-        email,
+        link: `http://localhost:3000/verification/${token}`,
       });
       await transporter.sendMail({
         from: "Purwadhika Team",
@@ -35,6 +49,7 @@ module.exports = {
         subject: "Account Verification",
         html: tempResult,
       });
+
       res.status(200).send({
         message: "Please check your Email to verify your Account",
         data,
@@ -114,5 +129,29 @@ module.exports = {
     } catch (err) {
       res.status(400).send(err);
     }
+  },
+
+  existingEmail: async (email) => {
+    const emailUser = await user.findOne({
+      where: {
+        email,
+      },
+    });
+    if (!emailUser) {
+      return false;
+    }
+    return true;
+  },
+
+  existingUsername: async (username) => {
+    const data = await user.findOne({
+      where: {
+        username,
+      },
+    });
+    if (!data) {
+      return false;
+    }
+    return true;
   },
 };

@@ -24,9 +24,17 @@ app.use(bearerToken());
 //#region API ROUTES
 
 const { authUser, profileUser } = require("./routers");
+const { authAdmin } = require("./routers");
 
 // ===========================
 // NOTE : Add your routes here
+
+// user
+app.use("/authUser", authUser);
+app.use("/profileUser", profileUser);
+
+// admin
+app.use("/authAdmin", authAdmin);
 
 app.get("/api", (req, res) => {
   res.send(`Hello, this is my API`);
