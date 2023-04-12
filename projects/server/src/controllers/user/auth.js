@@ -23,20 +23,6 @@ module.exports = {
         password: hashPassword,
       });
 
-      // const afterRegistered = moment()
-      //   .add(24, "hours")
-      //   .format("YYYY-MM-DD HH:mm:ss");
-
-      // schedule.scheduleJob(
-      //   afterRegistered,
-      //   async () =>
-      //     await user.destroy({
-      //       where: {
-      //         id: data.id,
-      //       },
-      //     })
-      // );
-
       const token = jwt.sign({ email: email }, secretKey, { expiresIn: "1h" });
       const tempEmail = fs.readFileSync("./src/template/email.html", "utf-8");
       const tempCompile = handlebars.compile(tempEmail);
@@ -101,7 +87,6 @@ module.exports = {
         },
         raw: true,
       });
-      if (isAccountExist === null) throw "Account not found";
       const payload = {
         email: isAccountExist.email,
         id: isAccountExist.id,
@@ -109,7 +94,7 @@ module.exports = {
       };
       const token = jwt.sign(payload, secretKey);
       const isValid = await bcrypt.compare(password, isAccountExist.password);
-      if (!isValid) throw "Password incorrect";
+      if (!isValid) throw "Incorrect Password";
       res.status(200).send({ message: "Login success", isAccountExist, token });
     } catch (err) {
       res.status(400).send(err);
@@ -147,6 +132,34 @@ module.exports = {
     const data = await user.findOne({
       where: {
         username,
+      },
+    });
+    if (!data) {
+      return false;
+    }
+    return true;
+  },
+
+  existingAccount: async (usernamePhoneEmail) => {
+    const data = await user.findOne({
+      where: {
+        [Op.or]: {
+          username: usernamePhoneEmail,
+          email: usernamePhoneEmail,
+          phone: usernamePhoneEmail,
+        },
+      },
+    });
+    if (!data) {
+      return true;
+    }
+    return false;
+  },
+
+  existingPassword: async (password) => {
+    const data = await user.findOne({
+      where: {
+        password,
       },
     });
     if (!data) {

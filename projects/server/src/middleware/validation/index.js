@@ -3,6 +3,8 @@ const db = require("../../models");
 const {
   existingEmail,
   existingUsername,
+  existingAccount,
+  existingPassword,
 } = require("../../controllers/user/auth");
 
 exports.runValidation = (req, res, next) => {
@@ -28,8 +30,7 @@ exports.validationRegister = [
         .catch((err) => {
           return Promise.reject(err);
         })
-    )
-    .normalizeEmail(),
+    ),
   check("phone", "Phone Number must not empty")
     .notEmpty()
     .isLength({ min: 10, max: 12 })
@@ -65,4 +66,32 @@ exports.validationRegister = [
       }
       return true;
     }),
+];
+
+exports.validationLogin = [
+  check("usernamePhoneEmail", "Account must not empty")
+    .notEmpty()
+    .custom((value) =>
+      existingAccount(value)
+        .then((status) => {
+          if (status) {
+            return Promise.reject("Account not found or Incorrect Password");
+          }
+        })
+        .catch((err) => {
+          return Promise.reject(err);
+        })
+    ),
+  check("password", "Password must not empty").notEmpty(),
+  // .custom((value) =>
+  //   existingPassword(value)
+  //     .then((status) => {
+  //       if (status) {
+  //         return Promise.reject("Account not found or Wrong Password");
+  //       }
+  //     })
+  //     .catch((err) => {
+  //       return Promise.reject(err);
+  //     })
+  // ),
 ];
