@@ -6,9 +6,6 @@ import {
   IconButton,
   Button,
   Menu,
-  MenuButton,
-  MenuList,
-  MenuItem,
   useDisclosure,
   Text,
   Stack,
@@ -23,7 +20,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 
 
 
-export default function Navbar() {
+export const Navbar = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const navigate = useNavigate();
 
