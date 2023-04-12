@@ -26,13 +26,16 @@ module.exports = (sequelize, DataTypes) => {
       videoURL: DataTypes.STRING,
       country: {
         type: DataTypes.STRING,
-        allowNull: false,
+        // allowNull: false,
       },
       isPublished: {
         type: DataTypes.BOOLEAN,
         defaultValue: false,
       },
-      isDeleted: DataTypes.BOOLEAN,
+      isDeleted: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false,
+      },
     },
     {
       sequelize,

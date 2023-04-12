@@ -95,3 +95,7 @@ exports.validationLogin = [
   //     })
   // ),
 ];
+
+exports.validationBlog = [
+  check()
+]

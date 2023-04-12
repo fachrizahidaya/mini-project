@@ -9,11 +9,7 @@ const {
 
 router.post("/register", validationRegister, runValidation, authUser.register);
 router.post("/verify", verifyToken, authUser.verification);
-router.post(
-  "/login",
-  validationLogin, runValidation,
-  authUser.login
-);
+router.post("/login", validationLogin, runValidation, authUser.login);
 router.get("/keepLogin", authUser.keepLogin);
 
 module.exports = router;
