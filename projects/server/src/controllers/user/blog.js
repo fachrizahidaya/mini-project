@@ -50,19 +50,36 @@ module.exports = {
           id: req.params.id,
         },
       });
-
+      
       if (response.isVerified === false)
         throw `Account is not verified, please verify first`;
-      const data = await blog.findOne({
-        idBlog: req.params.id,
-      });
+      // const data = await blog.findOne({
+      //   idBlog: req.params.id,
+      // });
+      // console.log(data.id);
 
       const result = await like.create({
         UserId: response.id,
-        BlogId: data.id,
+        BlogId
       });
       res.status(200).send("Like added");
     } catch (err) {
+      res.status(400).send(err);
+    }
+  },
+
+  userLike: async (req, res) => {
+    try {
+      const data = await like.findAll({
+        order: [["createdAt", "DESC"]],
+        include: [{ model: blog }],
+        where: {
+          UserId: req.params.UserId,
+        },
+      });
+      res.status(200).send(data);
+    } catch (err) {
+      console.log(err);
       res.status(400).send(err);
     }
   },

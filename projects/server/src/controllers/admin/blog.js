@@ -7,6 +7,7 @@ module.exports = {
   allBlog: async (req, res) => {
     try {
       const data = await blog.findAll({
+        order: [["createdAt", "DESC"]],
         include: [
           {
             model: blogCategory,
@@ -18,6 +19,44 @@ module.exports = {
       res.status(200).send(data);
     } catch (err) {
       console.log(err);
+      res.status(400).send(err);
+    }
+  },
+
+  allCategory: async (req, res) => {
+    try {
+      const data = await category.findAll({
+        attributes: ["id", "name"],
+      });
+      res.status(200).send(data);
+    } catch (err) {
+      res.status(400).send(err);
+    }
+  },
+
+  pagBlog: async (req, res) => {
+    try {
+      const page = parseInt(req.query.page) - 1 || 0;
+      const limit = parseInt(req.query.limit) || 5;
+      const search = req.query.search || "";
+      let sort = req.query.sort || "date";
+      let genre = req.query.genre || "All";
+
+      const genreOption = await category.findAll({
+        attributes: ["name"],
+      });
+      genre === "All"
+        ? (genre = [...genreOption])
+        : (genre = req.query.genre.split(","));
+      req.query.sort ? (sort = req.query.sort.split(",")) : (sort = [sort]);
+
+      let sortBy = {};
+      if (sort[1]) {
+        sortBy[sort[0]] = sort[1];
+      } else {
+        sortBy[sort[0]] = "ASC";
+      }
+    } catch (err) {
       res.status(400).send(err);
     }
   },
