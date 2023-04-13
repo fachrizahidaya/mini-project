@@ -118,6 +118,106 @@ module.exports = {
     }
   },
 
+  forgotPassword: async (req, res) => {
+    try {
+      const { email } = req.body;
+      const isAccountExist = await user.findOne({
+        attributes: ["email"],
+        where: {
+          email: email,
+        },
+      });
+      console.log(isAccountExist.email);
+      const token = jwt.sign(
+        {
+          email: isAccountExist.email,
+        },
+        secretKey,
+        { expiresIn: "1h" }
+      );
+      const tempEmail = fs.readFileSync("./src/template/reset.html", "utf-8");
+      const tempCompile = handlebars.compile(tempEmail);
+      const tempResult = tempCompile({
+        email: isAccountExist.email,
+        link1: `http://localhost:3000/reset-password/${token}`,
+      });
+      await transporter.sendMail({
+        from: "Admin",
+        to: email,
+        subject: "Reset Password",
+        html: tempResult,
+      });
+      res.status(200).send({
+        message: "Please check your Email to reset password",
+        data: token,
+      });
+    } catch (err) {
+      res.status(400).send(err);
+    }
+  },
+
+  resetPassword: async (req, res) => {
+    try {
+      const { password, confirmPassword, token } = req.body;
+      const isAccountExist = await user.findOne({
+        where: {
+          email: req.user.email,
+        },
+      });
+      const salt = await bcrypt.genSalt(10);
+      const hashPass = await bcrypt.hash(password, salt);
+      await user.update(
+        {
+          password: hashPass,
+        },
+        {
+          where: {
+            email: req.user.email,
+          },
+        }
+      );
+      res.status(200).send({
+        message: "Please Login again",
+        data: isAccountExist,
+      });
+    } catch (err) {
+      res.status(400).send(err);
+    }
+  },
+
+  changePassword: async (req, res) => {
+    try {
+      const { currentPassword, password, confirmPassword } = req.body;
+      const isAccountExist = await user.findOne({
+        where: { id: req.params.id },
+      });
+      const isValid = await bcrypt.compare(
+        currentPassword,
+        isAccountExist.password
+      );
+      if (!isValid) throw `Incorrect Current Password`;
+      const salt = await bcrypt.genSalt(10);
+      const hashPass = await bcrypt.hash(password, salt);
+      const data = await user.update(
+        {
+          password: hashPass,
+        },
+        {
+          where: {
+            id: req.params.id,
+          },
+        }
+      );
+      res.status(200).send({
+        message: "Please Login again",
+        data: isAccountExist,
+      });
+    } catch (err) {
+      res.status(400).send(err);
+    }
+  },
+
+  // controllers for express-validator
   existingEmail: async (email) => {
     const emailUser = await user.findOne({
       where: {
@@ -168,5 +268,17 @@ module.exports = {
       return false;
     }
     return true;
+  },
+
+  registeredEmail: async (email) => {
+    const data = await user.findOne({
+      where: {
+        email,
+      },
+    });
+    if (!data) {
+      return true;
+    }
+    return false;
   },
 };

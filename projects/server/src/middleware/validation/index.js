@@ -5,6 +5,7 @@ const {
   existingUsername,
   existingAccount,
   existingPassword,
+  registeredEmail,
 } = require("../../controllers/user/auth");
 
 exports.runValidation = (req, res, next) => {
@@ -97,5 +98,61 @@ exports.validationLogin = [
 ];
 
 exports.validationBlog = [
-  check()
-]
+  check("title", "Title must not empty").notEmpty(),
+  check("content", "Content must not empty").notEmpty(),
+];
+
+exports.validationEmail = [
+  check("email", "Email must not empty")
+    .notEmpty()
+    .custom((value) =>
+      registeredEmail(value)
+        .then((status) => {
+          if (status) {
+            return Promise.reject("Account not found");
+          }
+        })
+        .catch((err) => {
+          return Promise.reject(err);
+        })
+    ),
+];
+
+exports.validationReset = [
+  check("password", "Password must not empty")
+    .notEmpty()
+    .isLength({ min: 6 })
+    .withMessage("Password minimum 6 characters")
+    .matches(/^.*(?=.*[a-zA-Z])(?=.*\d).*$/i)
+    .withMessage(
+      "Password must contain a capital character and a special character"
+    ),
+  check("confirmPassword", "Password Confirmation must not empty")
+    .notEmpty()
+    .custom((value, { req }) => {
+      if (value !== req.body.password) {
+        throw "Password confirmation not matched with the password";
+      }
+      return true;
+    }),
+];
+
+exports.validationChange = [
+  check("currentPassword", "Current Password must not empty").notEmpty(),
+  check("password", "Password must not empty")
+    .notEmpty()
+    .isLength({ min: 6 })
+    .withMessage("Password minimum 6 characters")
+    .matches(/^.*(?=.*[a-zA-Z])(?=.*\d).*$/i)
+    .withMessage(
+      "Password must contain a capital character and a special character"
+    ),
+  check("confirmPassword", "Password Confirmation must not empty")
+    .notEmpty()
+    .custom((value, { req }) => {
+      if (value !== req.body.password) {
+        throw "Password confirmation not matched with the password";
+      }
+      return true;
+    }),
+];
