@@ -1,7 +1,9 @@
+const { Sequelize, Op } = require("sequelize");
 const db = require("../../models");
 const blog = db.Blog;
 const blogCategory = db.Blog_Category;
 const category = db.Category;
+const user = db.User;
 
 module.exports = {
   allBlog: async (req, res) => {
@@ -36,47 +38,36 @@ module.exports = {
 
   pagBlog: async (req, res) => {
     try {
-      const pageAsNumber = Number.parseInt(req.query.page);
-      const sizeAsNumber = Number.parseInt(req.query.size);
-      let page = 0;
-      if (!Number.isNaN(pageAsNumber) && pageAsNumber > 0) {
-        page = pageAsNumber;
-      }
-      let size = 5;
-      if (!Number.isNaN(sizeAsNumber) && sizeAsNumber < 10) {
-        size = size;
-      }
-
-      const data = await blog.findAndCountAll({
-        limit: size,
-        offset: page * size,
+      const { id_cat, search, sort } = req.query;
+      const page1 = parseInt(req.query.page);
+      const size1 = parseInt(req.query.size);
+      const result = await blog.findAll({
+        include: [
+          {
+            model: blogCategory,
+            attributes: [],
+            include: [
+              {
+                model: category,
+                attributes: [],
+                where: { id: id_cat },
+              },
+            ],
+          },
+          {
+            model: user,
+            attributes: [],
+          },
+        ],
+        where: { title: { [Op.like]: `%${search}%` } },
+        order: [["createdAt", `${sort}`]],
+        limit: size1,
+        offset: page1,
+        raw: true,
       });
-      // const page = parseInt(req.query.page) - 1 || 0;
-      // const limit = parseInt(req.query.limit) || 5;
-      // const search = req.query.search || "";
-      // let sort = req.query.sort || "date";
-      // let genre = req.query.genre || "All";
-
-      // const genreOption = await category.findAll({
-      //   attributes: ["name"],
-      // });
-      // genre === "All"
-      //   ? (genre = [...genreOption])
-      //   : (genre = req.query.genre.split(","));
-      // req.query.sort ? (sort = req.query.sort.split(",")) : (sort = [sort]);
-
-      // let sortBy = {};
-      // if (sort[1]) {
-      //   sortBy[sort[0]] = sort[1];
-      // } else {
-      //   sortBy[sort[0]] = "ASC";
-      // }
-      res.status(200).send({
-        content: data.rows,
-        totalPage: Math.ceil(data.count / size),
-      });
+      res.status(200).send(result);
     } catch (err) {
-      console.log(err)
+      console.log(err);
       res.status(400).send(err);
     }
   },
