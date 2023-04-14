@@ -10,13 +10,6 @@ module.exports = {
     try {
       const data = await blog.findAll({
         order: [["createdAt", "DESC"]],
-        include: [
-          {
-            model: blogCategory,
-            attributes: ["CategoryId"],
-            include: [{ model: category, attributes: ["name"] }],
-          },
-        ],
       });
       res.status(200).send(data);
     } catch (err) {
@@ -39,30 +32,39 @@ module.exports = {
   pagBlog: async (req, res) => {
     try {
       const { id_cat, search, sort } = req.query;
-      const page1 = parseInt(req.query.page);
-      const size1 = parseInt(req.query.size);
+      const cat1 = id_cat;
+      const sort1 = sort || "DESC";
+      const page1 = parseInt(req.query.page) || 0;
+      const size1 = parseInt(req.query.size) || 8;
+      const start = (page1 - 1) * size1;
+      const condition = page1 * start;
       const result = await blog.findAll({
+        where: {
+          [Op.and]: [
+            {
+              CategoryId: {
+                [Op.like]: `%${cat1}%`,
+              },
+            },
+            {
+              title: { [Op.like]: `%${search}%` },
+            },
+          ],
+        },
+        attributes: ["id", "title", "CategoryId"],
         include: [
           {
-            model: blogCategory,
-            attributes: [],
-            include: [
-              {
-                model: category,
-                attributes: [],
-                where: { id: id_cat },
-              },
-            ],
+            model: user,
+            attributes: ["username"],
           },
           {
-            model: user,
-            attributes: [],
+            model: category,
+            attributes: ["id", "name"],
           },
         ],
-        where: { title: { [Op.like]: `%${search}%` } },
-        order: [["createdAt", `${sort}`]],
+        order: [["createdAt", `${sort1}`]],
         limit: size1,
-        offset: page1,
+        offset: start,
         raw: true,
       });
       res.status(200).send(result);

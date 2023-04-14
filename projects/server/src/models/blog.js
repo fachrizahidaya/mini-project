@@ -11,8 +11,9 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
       Blog.belongsTo(models.User);
       Blog.hasMany(models.Blog_Keyword);
-      Blog.hasMany(models.Blog_Category);
+      // Blog.hasMany(models.Blog_Category);
       Blog.hasMany(models.Like);
+      Blog.belongsTo(models.Category)
     }
   }
   Blog.init(

@@ -23,20 +23,10 @@ module.exports = {
         UserId: response.id,
         CategoryId,
       });
-
-      const data = await blog.findAll({
-        where: {
-          id: result.id,
-        },
+      res.status(200).send({
+        message: "Success Added",
+        data: result,
       });
-
-      data.map(async (item) => {
-        await blogCategory.create({
-          CategoryId,
-          BlogId: item.id,
-        });
-      });
-      res.status(200).send("Success Added");
     } catch (err) {
       res.status(400).send(err);
     }
@@ -50,7 +40,7 @@ module.exports = {
           id: req.params.id,
         },
       });
-      
+
       if (response.isVerified === false)
         throw `Account is not verified, please verify first`;
       // const data = await blog.findOne({
@@ -60,7 +50,7 @@ module.exports = {
 
       const result = await like.create({
         UserId: response.id,
-        BlogId
+        BlogId,
       });
       res.status(200).send("Like added");
     } catch (err) {
