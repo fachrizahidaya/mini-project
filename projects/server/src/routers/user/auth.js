@@ -34,5 +34,6 @@ router.patch(
   runValidation,
   authUser.changePassword
 );
+router.post("/secondVer", authUser.secondVerification);
 
 module.exports = router;

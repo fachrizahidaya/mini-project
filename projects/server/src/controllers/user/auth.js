@@ -217,6 +217,37 @@ module.exports = {
     }
   },
 
+  secondVerification: async (req, res) => {
+    try {
+      const { email } = req.body;
+      const response = await user.findOne({
+        where: {
+          email: email,
+        },
+      });
+      const token = jwt.sign({ email: email }, secretKey, { expiresIn: "1h" });
+      const tempEmail = fs.readFileSync("./src/template/email.html", "utf-8");
+      const tempCompile = handlebars.compile(tempEmail);
+      const tempResult = tempCompile({
+        link: `http://localhost:3000/verification/${token}`,
+      });
+      await transporter.sendMail({
+        from: "Purwadhika Team",
+        to: email,
+        subject: "Account Verification",
+        html: tempResult,
+      });
+      res
+        .status(200)
+        .send({
+          message: "Please check your Email to verify your Account",
+          token,
+        });
+    } catch (err) {
+      res.status(400).send(err);
+    }
+  },
+
   // controllers for express-validator
   existingEmail: async (email) => {
     const emailUser = await user.findOne({
