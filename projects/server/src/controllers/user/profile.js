@@ -26,23 +26,9 @@ module.exports = {
         id: getProfile.id,
         imgProfile: getProfile.imgProfile,
       });
-      //   const errors = validationResult(req);
-      //   if (!errors.isEmpty()) {
-      //     const err = new Error("Input values not match");
-      //     err.errorStatus = 400;
-      //     err.data = errors.array();
-      //     throw err;
-      //   }
-      //   if (!req.file) {
-      //     const err = new Error("Image must be uploaded");
-      //     err.errorStatus = 422;
-      //     err.data = errors.array();
-      //     throw err;
-      //   }
-      //   const image = req.file.path;
     } catch (err) {
       res.status(400).send(err);
-      console.log(err)
+      console.log(err);
     }
   },
 };
