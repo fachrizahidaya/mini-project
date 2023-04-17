@@ -5,6 +5,8 @@ const { join } = require("path");
 const db = require("./models");
 const bearerToken = require("express-bearer-token");
 const path = require("path");
+const imgMiddleware = require("./middleware/multer");
+const bodyParser = require("body-parser");
 
 const PORT = process.env.PORT || 8000;
 const app = express();
@@ -20,6 +22,7 @@ app.use(
 app.use(express.json());
 app.use("/Public", express.static(path.join(__dirname, "/Public")));
 app.use(bearerToken());
+app.use(bodyParser.json());
 
 //#region API ROUTES
 
