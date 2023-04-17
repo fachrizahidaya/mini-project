@@ -24,6 +24,7 @@ const fileFilter = (req, file, cb) => {
     if (
       file.mimetype === "image/png" ||
       file.mimetype === "image/jpg" ||
+      file.mimetype === "image/gif" ||
       file.mimetype === "image/jpeg"
     ) {
       cb(null, true);
@@ -39,6 +40,6 @@ const maxSize = 1 * 1024 * 1024;
 
 exports.multerUpload = multer({
   storage: storage,
-  fileFilter: fileFilter,
-  limits: { fileSize: maxSize },
+  //   fileFilter: fileFilter,
+  //   limits: { fileSize: maxSize },
 });

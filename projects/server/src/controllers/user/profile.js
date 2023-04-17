@@ -5,7 +5,16 @@ const user = db.User;
 module.exports = {
   uploadPic: async (req, res) => {
     try {
+      const allowedTypes = [
+        "image/jpg",
+        "image/jpeg",
+        "image/png",
+        "image/gif",
+      ];
       let fileUploaded = req.file;
+      if (!req.file) throw "Picture is required";
+      if (!allowedTypes.includes(req.file.mimetype))
+        throw "Invalid file type. Only JPG, JPEG, WEBP and PNG are allowed.";
       await user.update(
         {
           imgProfile: `Public/${fileUploaded.filename}`,
@@ -16,6 +25,12 @@ module.exports = {
           },
         }
       );
+
+      if (req.file.size > 1 * 1024 * 1024) {
+        return res
+          .status(401)
+          .send("File size exceeds the allowed limit of 1MB.");
+      }
       const getProfile = await user.findOne({
         where: {
           id: req.params.id,
