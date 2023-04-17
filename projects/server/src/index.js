@@ -39,14 +39,14 @@ const {
 // NOTE : Add your routes here
 
 // user
-app.use("/authUser", authUser);
-app.use("/profileUser", profileUser);
-app.use("/blogUser", blogUser);
+app.use("/api/authUser", authUser);
+app.use("/api/profileUser", profileUser);
+app.use("/api/blogUser", blogUser);
 
 // admin
-app.use("/authAdmin", authAdmin);
-app.use("/catAdmin", catAdmin);
-app.use("/blogAdmin", blogAdmin);
+app.use("/api/authAdmin", authAdmin);
+app.use("/api/catAdmin", catAdmin);
+app.use("/api/blogAdmin", blogAdmin);
 
 app.get("/api", (req, res) => {
   res.send(`Hello, this is my API`);
