@@ -26,8 +26,8 @@ export const Navbar = () => {
 
   return (
     <>
-      <Box bgColor='blue.500' px={{ base: '6', md: '4' }}>
-        <Flex h={"7.5vh"} alignItems={'center'} justifyContent={'space-between'}>
+      <Box background="#185a9d" px={{ base: '6', md: '4' }} position='fixed' w='full' zIndex='10'>
+        <Flex pr={{base: 'none', xl: '40'}} pl={{base: 'none', xl: '40'}} h={"7.5vh"} alignItems={'center'} justifyContent={'space-between'}>
           <IconButton
             bgColor={'blue.500'}
             color='white'
@@ -39,7 +39,7 @@ export const Navbar = () => {
             fontSize='20px'
           />
           <HStack spacing={2} alignItems={'center'}>
-            <Text fontWeight='bold' fontSize={{ base: 'md', md: '2xl'}} color='white' className='test' pr='8' display={{ md: 'flex' }} as='button' onClick={() => navigate('/landing')}>
+            <Text fontWeight='bold' fontSize={{ base: 'md', md: '2xl'}} color='white' className='test' pr='8' display={{ md: 'flex' }} as='button' onClick={() => navigate('/')}>
               MY BLOG
             </Text>
             <HStack

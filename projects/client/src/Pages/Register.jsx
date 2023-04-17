@@ -1,12 +1,6 @@
 import {
   Flex,
   Box,
-  FormControl,
-  FormLabel,
-  Input,
-  InputGroup,
-  HStack,
-  InputRightElement,
   Stack,
   Button,
   Heading,
@@ -14,32 +8,37 @@ import {
   useColorModeValue,
   Link,
 } from "@chakra-ui/react";
-import { useState, useRef } from "react";
-import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link as RouterLink } from "react-router-dom";
+import { motion } from "framer-motion";
+import { Formik, Form } from "formik";
+import * as Yup from "yup";
+import { PassField, TextField } from "../Components/TextField";
 
 export const RegistrationForm = () => {
   const navigate = useNavigate();
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfrmPassword, setShowConfrmPassword] = useState(false);
 
-  const onRegister = async () => {
+  const validationRegister = Yup.object().shape({
+    username: Yup.string()
+      .required("username is required")
+      .min(3, "username should be at least three characters"),
+    email: Yup.string().email("invalid email").required("email is required"),
+    phonenumber: Yup.string()
+      .matches(/^08\d{10,}$/, "Invalid phone number") // UK phone number format: 0XXXXXXXXXX
+      .required("Phone number is required"),
+    password: Yup.string()
+      .required("Password is required")
+      .matches(
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*.,])(?=.{6,})/,
+        "Must Contain 6 Characters, One Uppercase, One Lowercase, One Number, and One Special Character"
+      ),
+    confirmPassword: Yup.string()
+      .required("Confirm password is required")
+      .oneOf([Yup.ref("password"), null], "Password does not matched"),
+  });
+
+  const onRegister = async (item) => {
     try {
-      const data = {
-        username: document.getElementById("username").value,
-        email: document.getElementById("email").value,
-        noHandphone: document.getElementById("noHandphone").value,
-        password: document.getElementById("password").value,
-        confirmPassword: document.getElementById("confirmPassword").value,
-      };
-
-      console.log(data);
-
-      document.getElementById("username").value = "";
-      document.getElementById("email").value = "";
-      document.getElementById("noHandphone").value = "";
-      document.getElementById("password").value = "";
-      document.getElementById("confirmPassword").value = "";
+      console.log(item);
     } catch (err) {
       console.log(err);
     }
@@ -50,96 +49,92 @@ export const RegistrationForm = () => {
       minH={"100vh"}
       align={"center"}
       justify={"center"}
-      bg={useColorModeValue("gray.50", "gray.800")}
+      background="linear-gradient(to bottom, #185a9d, #43cea2)"
     >
-      <Stack spacing={8} mx={"auto"} maxW={"lg"} py={12} px={6}>
-        <Stack align={"center"}>
-          <Heading fontSize={"4xl"} textAlign={"center"}>
-            Sign up
-          </Heading>
-        </Stack>
-        <Box
-          rounded={"lg"}
-          bg={useColorModeValue("white", "gray.700")}
-          boxShadow={"lg"}
-          p={8}
+      <Stack spacing={8} w="full" maxW={"480px"} py={12} px={6}>
+        <motion.div
+          key={1}
+          initial={{ opacity: 0, x: "-100%" }}
+          animate={{ opacity: 1, x: "0%" }}
+          exit={{ opacity: 0, x: "100%" }}
+          transition={{ duration: 0.9 }}
         >
-          <Stack spacing={4}>
-            <FormControl id="username" isRequired>
-              <FormLabel>Username</FormLabel>
-              <Input type="text" />
-            </FormControl>
-            <FormControl id="email" isRequired>
-              <FormLabel>Email address</FormLabel>
-              <Input type="email" />
-            </FormControl>
-            <FormControl id="noHandphone" isRequired>
-              <FormLabel>No. Handphone</FormLabel>
-              <Input type="text" />
-            </FormControl>
-            <HStack display={{ base: "block", lg: "flex" }}>
-              <Box>
-                <FormControl id="password" isRequired>
-                  <FormLabel>Password</FormLabel>
-                  <InputGroup>
-                    <Input type={showPassword ? "text" : "password"} />
-                    <InputRightElement h={"full"}>
-                      <Button
-                        variant={"ghost"}
-                        onClick={() =>
-                          setShowPassword((showPassword) => !showPassword)
-                        }
-                      >
-                        {showPassword ? <ViewIcon /> : <ViewOffIcon />}
-                      </Button>
-                    </InputRightElement>
-                  </InputGroup>
-                </FormControl>
-              </Box>
-              <Box>
-                <FormControl id="confirmPassword" isRequired>
-                  <FormLabel>Confirm Password</FormLabel>
-                  <InputGroup>
-                    <Input type={showConfrmPassword ? "text" : "password"} />
-                    <InputRightElement h={"full"}>
-                      <Button
-                        variant={"ghost"}
-                        onClick={() =>
-                          setShowConfrmPassword(
-                            (showConfrmPassword) => !showConfrmPassword
-                          )
-                        }
-                      >
-                        {showConfrmPassword ? <ViewIcon /> : <ViewOffIcon />}
-                      </Button>
-                    </InputRightElement>
-                  </InputGroup>
-                </FormControl>
-              </Box>
-            </HStack>
-            <Stack spacing={10} pt={2}>
-              <Button
-                loadingText="Submitting"
-                size="lg"
-                bg={"blue.400"}
-                color={"white"}
-                _hover={{
-                  bg: "blue.500",
-                }}
-                onClick={onRegister}
-              >
+          <Box
+            rounded={"lg"}
+            bg={useColorModeValue("white", "gray.700")}
+            boxShadow={"lg"}
+            p={8}
+            bgColor="whiteAlpha.500"
+          >
+            <Stack mb="4" align={"center"}>
+              <Heading fontSize={"4xl"} textAlign={"center"}>
                 Sign up
-              </Button>
-            </Stack>
-            <Stack pt={6}>
-              <Text align={"center"}>
-                <Link color={"blue.400"} onClick={() => navigate("/")}>
-                  Back to home
-                </Link>
+              </Heading>
+              <Text fontSize='12px'>
+                Already a member ?{" "}
+                <Text as={RouterLink} color="blue.500" to={"/login"}>
+                  Sign in
+                </Text>
               </Text>
             </Stack>
-          </Stack>
-        </Box>
+            <Formik
+              initialValues={{
+                username: "",
+                email: "",
+                phonenumber: "",
+                password: "",
+                confirmPassword: "",
+              }}
+              validationSchema={validationRegister}
+              onSubmit={(values, action) => {
+                onRegister(values);
+                action.resetForm();
+              }}
+            >
+              {(props) => {
+                return (
+                  <>
+                    <Form>
+                      <Stack spacing={3}>
+                        <TextField
+                          label="Username"
+                          type="text"
+                          name="username"
+                        />
+                        <TextField label="Email" type="text" name="email" />
+                        <TextField
+                          label="Phone Number"
+                          type="text"
+                          name="phonenumber"
+                        />
+                        <Flex gap="2" display={{ md: "flex", base: "block" }}>
+                          <PassField label="Password" name="password" />
+                          <PassField
+                            label="Confirm Password"
+                            name="confirmPassword"
+                          />
+                        </Flex>
+                        <Stack pt={4}>
+                          <Button
+                            loadingText="Submitting"
+                            bg={"blue.400"}
+                            color={"white"}
+                            _hover={{
+                              bg: "blue.500",
+                            }}
+                            type="submit"
+                          >
+                            Sign up
+                          </Button>
+                        </Stack>
+                      </Stack>
+                    </Form>
+                  </>
+                );
+              }}
+            </Formik>
+          </Box>
+        </motion.div>
       </Stack>
     </Flex>
   );
