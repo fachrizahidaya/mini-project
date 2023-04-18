@@ -24,7 +24,7 @@ module.exports = {
       });
 
       const token = jwt.sign({ email: email }, secretKey, { expiresIn: "1h" });
-      const tempEmail = fs.readFileSync("./src/template/email.html", "utf-8");
+      const tempEmail = fs.readFileSync("./src/template/user.html", "utf-8");
       const tempCompile = handlebars.compile(tempEmail);
       const tempResult = tempCompile({
         link: `http://localhost:3000/verification/${token}`,
@@ -237,12 +237,120 @@ module.exports = {
         subject: "Account Verification",
         html: tempResult,
       });
-      res
-        .status(200)
-        .send({
-          message: "Please check your Email to verify your Account",
-          token,
-        });
+      res.status(200).send({
+        message: "Please check your Email to verify your Account",
+        token,
+      });
+    } catch (err) {
+      res.status(400).send(err);
+    }
+  },
+
+  changeEmail: async (req, res) => {
+    try {
+      const { currentEmail, newEmail } = req.body;
+      const isAccountExist = await user.findOne({
+        where: {
+          email: currentEmail ? currentEmail : "",
+        },
+        raw: true,
+      });
+      if (isAccountExist.isVerified === 0)
+        throw `Account not verified, you are not allowed to change Email`;
+      const data = await user.update(
+        {
+          email: newEmail,
+          isVerified: false,
+        },
+        {
+          where: {
+            id: req.params.id,
+          },
+        }
+      );
+      const token = jwt.sign({ email: newEmail }, secretKey, {
+        expiresIn: "1h",
+      });
+      const tempEmail = fs.readFileSync(
+        "./src/template/changeEmail.html",
+        "utf-8"
+      );
+      const tempCompile = handlebars.compile(tempEmail);
+      const tempResult = tempCompile({
+        link: `http://localhost:3000/verification-change-email/${token}`,
+      });
+      await transporter.sendMail({
+        from: "Purwadhika Team",
+        to: newEmail,
+        subject: "Change Email Verification",
+        html: tempResult,
+      });
+      res.status(200).send({
+        message: "Please check your Email to verify your Account",
+        data,
+        token,
+      });
+    } catch (err) {
+      res.status(400).send(err);
+      console.log(err);
+    }
+  },
+
+  changeUsername: async (req, res) => {
+    try {
+      const { currentUsername, newUsername } = req.body;
+      const isAccountExist = await user.findOne({
+        where: {
+          username: currentUsername ? currentUsername : "",
+        },
+        raw: true,
+      });
+      if (isAccountExist.isVerified === 0)
+        throw `Account not verified, you are not allowed to change Email`;
+      const data = await user.update(
+        {
+          username: newUsername,
+        },
+        {
+          where: {
+            id: req.params.id,
+          },
+        }
+      );
+      res.status(200).send({
+        message: "Username edited",
+        data,
+      });
+    } catch (err) {
+      res.status(400).send(err);
+    }
+  },
+
+  changePhone: async (req, res) => {
+    try {
+      const { currentPhone, newPhone } = req.body;
+      const isAccountExist = await user.findOne({
+        where: {
+          phone: currentPhone ? currentPhone : "",
+        },
+        raw: true,
+      });
+      if (isAccountExist.isVerified === 0)
+        throw `Account not verified, you are not allowed to change Email`;
+      const data = await user.update(
+        {
+          phone: newPhone,
+        },
+        {
+          where: {
+            id: req.params.id,
+          },
+        }
+      );
+      res.status(200).send({
+        message: "Phone Number edited",
+        data,
+      });
     } catch (err) {
       res.status(400).send(err);
     }
@@ -265,6 +373,18 @@ module.exports = {
     const data = await user.findOne({
       where: {
         username,
+      },
+    });
+    if (!data) {
+      return false;
+    }
+    return true;
+  },
+
+  existingPhone: async (phone) => {
+    const data = await user.findOne({
+      where: {
+        phone,
       },
     });
     if (!data) {
@@ -305,6 +425,30 @@ module.exports = {
     const data = await user.findOne({
       where: {
         email,
+      },
+    });
+    if (!data) {
+      return true;
+    }
+    return false;
+  },
+
+  registeredUsername: async (username) => {
+    const data = await user.findOne({
+      where: {
+        username,
+      },
+    });
+    if (!data) {
+      return true;
+    }
+    return false;
+  },
+
+  registeredPhone: async (phone) => {
+    const data = await user.findOne({
+      where: {
+        phone,
       },
     });
     if (!data) {

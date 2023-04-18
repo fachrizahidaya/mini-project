@@ -6,6 +6,9 @@ const {
   existingAccount,
   existingPassword,
   registeredEmail,
+  registeredUsername,
+  registeredPhone,
+  existingPhone,
 } = require("../../controllers/user/auth");
 
 exports.runValidation = (req, res, next) => {
@@ -137,7 +140,7 @@ exports.validationReset = [
     }),
 ];
 
-exports.validationChange = [
+exports.validationChangePass = [
   check("currentPassword", "Current Password must not empty").notEmpty(),
   check("password", "Password must not empty")
     .notEmpty()
@@ -155,4 +158,101 @@ exports.validationChange = [
       }
       return true;
     }),
+];
+
+exports.validationChangeEmail = [
+  check("currentEmail", "Current Email must not empty")
+    .notEmpty()
+    .matches(/.+\@.+\..+/)
+    .withMessage("Email Must with @")
+    .custom((value) =>
+      registeredEmail(value)
+        .then((status) => {
+          if (status) {
+            return Promise.reject("Account not found");
+          }
+        })
+        .catch((err) => {
+          return Promise.reject(err);
+        })
+    ),
+  check("newEmail", "New Email must not empty")
+    .notEmpty()
+    .matches(/.+\@.+\..+/)
+    .withMessage("Email Must with @")
+    .custom((value) =>
+      existingEmail(value)
+        .then((status) => {
+          if (status) {
+            return Promise.reject("Email already in use");
+          }
+        })
+        .catch((err) => {
+          return Promise.reject(err);
+        })
+    ),
+];
+
+exports.validationChangeUsername = [
+  check("currentUsername", "Username must not empty")
+    .notEmpty()
+    .custom((value) =>
+      registeredUsername(value)
+        .then((status) => {
+          if (status) {
+            return Promise.reject("Account not found");
+          }
+        })
+        .catch((err) => {
+          return Promise.reject(err);
+        })
+    ),
+  check("newUsername", "New Username must not empty")
+    .notEmpty()
+    .custom((value) =>
+      existingUsername(value)
+        .then((status) => {
+          if (status) {
+            return Promise.reject("Username already in use");
+          }
+        })
+        .catch((err) => {
+          return Promise.reject(err);
+        })
+    )
+    .isLength({ min: 5 })
+    .withMessage("Username minimum 5 characters"),
+];
+
+exports.validationChangePhone = [
+  check("currentPhone", "Phone Number must not empty")
+    .notEmpty()
+    .isLength({ min: 10, max: 12 })
+    .withMessage("Phone number minimum 10 numbers and maximum 12 numbers")
+    .custom((value) =>
+      registeredPhone(value)
+        .then((status) => {
+          if (status) {
+            return Promise.reject("Account not found");
+          }
+        })
+        .catch((err) => {
+          return Promise.reject(err);
+        })
+    ),
+  check("newPhone", "New Phone Number must not empty")
+    .notEmpty()
+    .custom((value) =>
+      existingPhone(value)
+        .then((status) => {
+          if (status) {
+            return Promise.reject("Phone Number already in use");
+          }
+        })
+        .catch((err) => {
+          return Promise.reject(err);
+        })
+    )
+    .isLength({ min: 10, max: 12 })
+    .withMessage("Phone number minimum 10 numbers and maximum 12 numbers"),
 ];

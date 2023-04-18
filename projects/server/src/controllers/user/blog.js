@@ -1,8 +1,10 @@
+const { Op } = require("sequelize");
 const db = require("../../models");
 const blog = db.Blog;
 const blogCategory = db.Blog_Category;
 const user = db.User;
 const like = db.Like;
+const category = db.Category;
 
 module.exports = {
   create: async (req, res) => {
@@ -58,7 +60,30 @@ module.exports = {
     }
   },
 
-  userLike: async (req, res) => {
+  findById: async (req, res) => {
+    try {
+      const data = await blog.findAll({
+        attributes: [
+          "id",
+          "title",
+          "content",
+          "imageURL",
+          "videoURL",
+          "UserId",
+          "CategoryId",
+        ],
+        include: [{ model: category, attributes: ["name"] }],
+        where: {
+          UserId: req.params.id,
+        },
+      });
+      res.status(200).send(data);
+    } catch (err) {
+      res.status(400).send(err);
+    }
+  },
+
+  findUserLike: async (req, res) => {
     try {
       const data = await like.findAll({
         order: [["createdAt", "DESC"]],
@@ -71,6 +96,53 @@ module.exports = {
     } catch (err) {
       console.log(err);
       res.status(400).send(err);
+    }
+  },
+
+  pagUser: async (req, res) => {
+    try {
+      const { id_cat, idUser, search, sort } = req.query;
+      const cat1 = id_cat;
+      const sort1 = sort || "DESC";
+      const user1 = parseInt(req.query.idUser);
+      const page1 = parseInt(req.query.page) || 0;
+      const size1 = parseInt(req.query.size) || 8;
+      const start = (page1 - 1) * size1;
+      const condition = page1 * start;
+      const result = await blog.findAll({
+        where: {
+          [Op.and]: [
+            // {
+            //   UserId: {
+            //     [Op.like]: `%${user1}%`,
+            //   },
+            // },
+            {
+              CategoryId: {
+                [Op.like]: `%${cat1}%`,
+              },
+            },
+            {
+              title: { [Op.like]: `%${search}%` },
+            },
+          ],
+        },
+        attributes: ["id", "title", "CategoryId", "UserId"],
+        include: [
+          {
+            model: category,
+            attributes: ["id", "name"],
+          },
+        ],
+        order: [["createdAt", `${sort1}`]],
+        limit: size1,
+        offset: start,
+        raw: true,
+      });
+      res.status(200).send(result);
+    } catch (err) {
+      res.status(400).send(err);
+      console.log(err);
     }
   },
 };
