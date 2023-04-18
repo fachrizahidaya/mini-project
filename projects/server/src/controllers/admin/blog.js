@@ -34,8 +34,9 @@ module.exports = {
       const { id_cat, search, sort } = req.query;
       const cat1 = id_cat;
       const sort1 = sort || "DESC";
-      const page1 = parseInt(req.query.page) || 0;
+      const page1 = parseInt(req.query.page) + 1 || 1;
       const size1 = parseInt(req.query.size) || 8;
+      const search1 = search || "";
       const start = (page1 - 1) * size1;
       const condition = page1 * start;
       const result = await blog.findAll({
@@ -47,7 +48,7 @@ module.exports = {
               },
             },
             {
-              title: { [Op.like]: `%${search}%` },
+              title: { [Op.like]: `%${search1}%` },
             },
           ],
         },

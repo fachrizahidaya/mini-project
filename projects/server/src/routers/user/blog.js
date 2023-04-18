@@ -14,5 +14,6 @@ router.post(
 router.get("/byId/:id", blogUser.findById);
 router.get("/userLike/:UserId", blogUser.findUserLike);
 router.get("/pagUser", blogUser.pagUser);
+router.get("/pagLike", blogUser.pagLike);
 
 module.exports = router;

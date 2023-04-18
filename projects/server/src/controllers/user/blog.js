@@ -104,30 +104,28 @@ module.exports = {
       const { id_cat, idUser, search, sort } = req.query;
       const cat1 = id_cat;
       const sort1 = sort || "DESC";
-      const user1 = parseInt(req.query.idUser);
-      const page1 = parseInt(req.query.page) || 0;
+      const page1 = parseInt(req.query.page) + 1 || 1;
       const size1 = parseInt(req.query.size) || 8;
+      const search1 = search || "";
       const start = (page1 - 1) * size1;
       const condition = page1 * start;
       const result = await blog.findAll({
         where: {
           [Op.and]: [
-            // {
-            //   UserId: {
-            //     [Op.like]: `%${user1}%`,
-            //   },
-            // },
+            {
+              UserId: idUser,
+            },
             {
               CategoryId: {
                 [Op.like]: `%${cat1}%`,
               },
             },
             {
-              title: { [Op.like]: `%${search}%` },
+              title: { [Op.like]: `%${search1}%` },
             },
           ],
         },
-        attributes: ["id", "title", "CategoryId", "UserId"],
+        attributes: ["id", "title", "content", "CategoryId", "UserId"],
         include: [
           {
             model: category,
@@ -143,6 +141,45 @@ module.exports = {
     } catch (err) {
       res.status(400).send(err);
       console.log(err);
+    }
+  },
+
+  pagLike: async (req, res) => {
+    try {
+      const { id_cat, idUser, search, sort } = req.query;
+      const cat1 = id_cat;
+      const sort1 = sort || "DESC";
+      const page1 = parseInt(req.query.page) + 1 || 1;
+      const size1 = parseInt(req.query.size) || 8;
+      const search1 = search || "";
+      const start = (page1 - 1) * size1;
+      const condition = page1 * start;
+      const result = await like.findAll({
+        attributes: ["id"],
+        include: [
+          {
+            model: blog,
+            attributes: ["title", "content"],
+            where: {
+              UserId: idUser,
+              title: { [Op.like]: `%${search1}%` },
+              CategoryId: { [Op.like]: `%${cat1}%` },
+            },
+            include: [
+              {
+                model: category,
+              },
+            ],
+          },
+        ],
+        order: [["createdAt", `${sort1}`]],
+        limit: size1,
+        offset: start,
+        raw: true,
+      });
+      res.status(200).send(result);
+    } catch (err) {
+      res.status(400).send(err);
     }
   },
 };
