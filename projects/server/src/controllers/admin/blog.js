@@ -31,14 +31,13 @@ module.exports = {
 
   pagBlog: async (req, res) => {
     try {
-      const { id_cat, search, sort } = req.query;
+      const { id_cat, search, sort, size } = req.query;
       const cat1 = id_cat;
       const sort1 = sort || "DESC";
       const page1 = parseInt(req.query.page) + 1 || 1;
-      const size1 = parseInt(req.query.size) || 8;
+      const size1 = parseInt(size) || 8;
       const search1 = search || "";
       const start = (page1 - 1) * size1;
-      const condition = page1 * start;
       const result = await blog.findAll({
         where: {
           [Op.and]: [
@@ -68,7 +67,28 @@ module.exports = {
         offset: start,
         raw: true,
       });
-      res.status(200).send(result);
+      const totalRows = await blog.count({
+        where: {
+          [Op.and]: [
+            {
+              CategoryId: {
+                [Op.like]: `%${cat1}%`,
+              },
+            },
+            {
+              title: { [Op.like]: `%${search1}%` },
+            },
+          ],
+        },
+      });
+      const totalPage = Math.ceil(totalRows / size1);
+      res.status(200).send({
+        page: totalPage,
+        rows: totalRows,
+        blogPage: page1,
+        listLimit: size1,
+        result,
+      });
     } catch (err) {
       console.log(err);
       res.status(400).send(err);
