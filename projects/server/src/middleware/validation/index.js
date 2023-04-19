@@ -12,6 +12,7 @@ const {
 } = require("../../controllers/user/auth");
 
 exports.runValidation = (req, res, next) => {
+  console.log(req);
   const error = validationResult(req);
   if (!error.isEmpty()) {
     return res.status(400).send(error.array()[0].msg);

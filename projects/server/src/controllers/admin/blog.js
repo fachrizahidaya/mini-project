@@ -4,13 +4,21 @@ const blog = db.Blog;
 const blogCategory = db.Blog_Category;
 const category = db.Category;
 const user = db.User;
+const keyword = db.Keyword;
 
 module.exports = {
   allBlog: async (req, res) => {
     try {
-      const data = await blog.findAll({
-        order: [["createdAt", "DESC"]],
-      });
+      const data = await blog.findAll(
+        {
+          order: [["createdAt", "DESC"]],
+        },
+        {
+          where: {
+            isDeleted: false,
+          },
+        }
+      );
       res.status(200).send(data);
     } catch (err) {
       console.log(err);
@@ -49,6 +57,9 @@ module.exports = {
             {
               title: { [Op.like]: `%${search1}%` },
             },
+            {
+              isDeleted: false,
+            },
           ],
         },
         attributes: ["id", "title", "CategoryId"],
@@ -78,6 +89,9 @@ module.exports = {
             {
               title: { [Op.like]: `%${search1}%` },
             },
+            {
+              isDeleted: false,
+            },
           ],
         },
       });
@@ -91,6 +105,18 @@ module.exports = {
       });
     } catch (err) {
       console.log(err);
+      res.status(400).send(err);
+    }
+  },
+
+  createKey: async (req, res) => {
+    try {
+      const { name } = req.body;
+      const data = await keyword.create({
+        name: name,
+      });
+      res.status(200).send(data);
+    } catch (err) {
       res.status(400).send(err);
     }
   },
