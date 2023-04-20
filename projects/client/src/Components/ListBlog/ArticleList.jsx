@@ -1,10 +1,10 @@
 import { Flex, Stack } from "@chakra-ui/react";
 import { CardBlog } from "./Card";
 
-export const ArticleList = () => {
+export const ArticleList = ({w}) => {
   const data = [1, 2, 3, 4, 5, 6, 7, 8];
   return (
-    <Stack align="center" p="4" w={{ xl: "1150px", base: "full" }}>
+    <Stack align="center" p="4" w={w}>
       <Flex
         borderRadius="2xl"
         justify="space-evenly"
