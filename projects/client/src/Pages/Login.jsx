@@ -106,7 +106,7 @@ export const LoginForm = () => {
               validationSchema={Yup.object({
                 password: Yup.string()
                   .required("Password is required")
-                  .min(8, "Password is too short"),
+                  .min(6, "Password is too short"),
                 [loginopt[current].title]: loginopt[current].yup,
               })}
               onSubmit={(values, action) => {

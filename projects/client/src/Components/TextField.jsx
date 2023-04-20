@@ -27,20 +27,12 @@ export const TextField = ({ label, type, name, ...props }) => {
 export const PassField = ({ label, name, ...props }) => {
   const [show, setShow] = useState(false);
   return (
-    <FormControl>
+    <FormControl {...props}>
       <FormLabel>{label}</FormLabel>
       <InputGroup>
-        <Field
-          as={Input}
-          {...props}
-          name={name}
-          type={show ? "text" : "password"}
-        />
+        <Field as={Input} name={name} type={show ? "text" : "password"} />
         <InputRightElement h={"full"}>
-          <Button
-            variant={"ghost"}
-            onClick={() => setShow((show) => !show)}
-          >
+          <Button variant={"ghost"} onClick={() => setShow((show) => !show)}>
             {show ? <ViewIcon /> : <ViewOffIcon />}
           </Button>
         </InputRightElement>

@@ -1,7 +1,7 @@
 import { Flex, Stack } from "@chakra-ui/react";
-import { CardBlog } from "./Card";
+import { CardBlogEdited } from "../ListBlog/CardEdited";
 
-export const ArticleList = ({w}) => {
+export const MyArticleList = ({w}) => {
   const data = [1, 2, 3, 4, 5, 6, 7, 8];
   return (
     <Stack align="center" p="4" w={w}>
@@ -14,7 +14,7 @@ export const ArticleList = ({w}) => {
         w="full"
       >
         {data.map((item, index) => {
-          return <CardBlog key={index} data={item} />;
+          return <CardBlogEdited key={index} data={item} />;
         })}
       </Flex>
     </Stack>

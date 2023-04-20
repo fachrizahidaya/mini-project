@@ -6,7 +6,6 @@ import {
   Heading,
   Text,
   useColorModeValue,
-  Link,
 } from "@chakra-ui/react";
 import { useNavigate, Link as RouterLink } from "react-router-dom";
 import { motion } from "framer-motion";
@@ -22,7 +21,7 @@ export const RegistrationForm = () => {
       .required("username is required")
       .min(3, "username should be at least three characters"),
     email: Yup.string().email("invalid email").required("email is required"),
-    phonenumber: Yup.string()
+    phone: Yup.string()
       .matches(/^08\d{10,}$/, "Invalid phone number") // UK phone number format: 0XXXXXXXXXX
       .required("Phone number is required"),
     password: Yup.string()
@@ -35,6 +34,8 @@ export const RegistrationForm = () => {
       .required("Confirm password is required")
       .oneOf([Yup.ref("password"), null], "Password does not matched"),
   });
+
+  console.log(process.env.REACT_APP_API_BASE_URL);
 
   const onRegister = async (item) => {
     try {
@@ -70,7 +71,7 @@ export const RegistrationForm = () => {
               <Heading fontSize={"4xl"} textAlign={"center"}>
                 Sign up
               </Heading>
-              <Text fontSize='12px'>
+              <Text fontSize="12px">
                 Already a member ?{" "}
                 <Text as={RouterLink} color="blue.500" to={"/login"}>
                   Sign in
@@ -81,7 +82,7 @@ export const RegistrationForm = () => {
               initialValues={{
                 username: "",
                 email: "",
-                phonenumber: "",
+                phone: "",
                 password: "",
                 confirmPassword: "",
               }}
@@ -105,7 +106,7 @@ export const RegistrationForm = () => {
                         <TextField
                           label="Phone Number"
                           type="text"
-                          name="phonenumber"
+                          name="phone"
                         />
                         <Flex gap="2" display={{ md: "flex", base: "block" }}>
                           <PassField label="Password" name="password" />
