@@ -6,6 +6,6 @@ export const HomePage = () => {
     <div>
       <Navbar />
       <Outlet />
-  </div>
+    </div>
   );
 };

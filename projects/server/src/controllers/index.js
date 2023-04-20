@@ -12,6 +12,8 @@ module.exports = {
   profileUser,
   blogUser,
   authAdmin,
+  blogUser,
+  authAdmin,
   catAdmin,
   blogAdmin,
 };

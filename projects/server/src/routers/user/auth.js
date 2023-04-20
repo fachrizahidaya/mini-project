@@ -1,6 +1,6 @@
 const router = require("express").Router();
 const { verifyToken } = require("../../middleware/verifyToken");
-const { authUser } = require("../../controllers/index");
+const { authUser } = require("../../controllers");
 const {
   validationRegister,
   runValidation,
