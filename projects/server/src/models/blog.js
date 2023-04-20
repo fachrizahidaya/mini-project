@@ -13,7 +13,7 @@ module.exports = (sequelize, DataTypes) => {
       Blog.hasMany(models.Blog_Keyword);
       // Blog.hasMany(models.Blog_Category);
       Blog.hasMany(models.Like);
-      Blog.belongsTo(models.Category)
+      Blog.belongsTo(models.Category);
     }
   }
   Blog.init(
@@ -22,8 +22,14 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         allowNull: false,
       },
-      imageURL: DataTypes.STRING,
-      content: DataTypes.STRING,
+      imageURL: {
+        type: DataTypes.STRING,
+        // allowNull: false,
+      },
+      content: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
       videoURL: DataTypes.STRING,
       country: {
         type: DataTypes.STRING,

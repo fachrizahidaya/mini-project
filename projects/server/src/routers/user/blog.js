@@ -23,10 +23,13 @@ router.post(
   multerUpload.single("file"),
   blogUser.uploadImg
 );
+router.patch("/remove/:id", blogUser.remove);
+router.patch("/update/:id", blogUser.update);
 router.get("/byId/:id", blogUser.findById);
 router.get("/userLike/:UserId", blogUser.findUserLike);
 router.get("/pagUser", blogUser.pagUser);
 router.get("/pagLike", blogUser.pagLike);
 router.get("/vidThumb/:id", blogUser.videoThumb);
+router.delete("/unlike/:id/:idBlog", blogUser.unlike);
 
 module.exports = router;

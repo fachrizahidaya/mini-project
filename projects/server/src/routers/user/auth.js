@@ -14,7 +14,7 @@ const {
 } = require("../../middleware/validation");
 
 router.post("/register", validationRegister, runValidation, authUser.register);
-router.post("/verify", verifyToken, authUser.verification);
+router.patch("/verify", verifyToken, authUser.verification);
 router.post("/login", validationLogin, runValidation, authUser.login);
 router.get("/keepLogin", authUser.keepLogin);
 router.put(
@@ -31,7 +31,7 @@ router.patch(
   authUser.resetPassword
 );
 router.patch(
-  "/changePass/:id",
+  "/changePass",
   verifyToken,
   validationChangePass,
   runValidation,
@@ -39,19 +39,22 @@ router.patch(
 );
 router.post("/secondVer", authUser.secondVerification);
 router.patch(
-  "/changeEmail/:id",
+  "/changeEmail",
+  verifyToken,
   validationChangeEmail,
   runValidation,
   authUser.changeEmail
 );
 router.patch(
-  "/changeUsername/:id",
+  "/changeUsername",
+  verifyToken,
   validationChangeUsername,
   runValidation,
   authUser.changeUsername
 );
 router.patch(
-  "/changePhone/:id",
+  "/changePhone",
+  verifyToken,
   validationChangePhone,
   runValidation,
   authUser.changePhone
