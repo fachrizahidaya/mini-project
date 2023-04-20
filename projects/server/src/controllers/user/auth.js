@@ -22,8 +22,16 @@ module.exports = {
         phone,
         password: hashPassword,
       });
+      const payload = {
+        username: data.username,
+        email: data.email,
+        phone: data.password,
+        password: data.password,
+        id: data.id,
+        isVerified: data.isVerified,
+      };
 
-      const token = jwt.sign({ email: email }, secretKey, { expiresIn: "1h" });
+      const token = jwt.sign(payload, secretKey, { expiresIn: "1h" });
       const tempEmail = fs.readFileSync("./src/template/user.html", "utf-8");
       const tempCompile = handlebars.compile(tempEmail);
       const tempResult = tempCompile({
