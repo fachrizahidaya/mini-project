@@ -114,7 +114,7 @@ module.exports = {
         },
         {
           where: {
-            id: req.params.id,
+            id: req.user.id,
           },
         }
       );
@@ -126,7 +126,7 @@ module.exports = {
       }
       const getImg = await blog.findOne({
         where: {
-          id: req.params.id,
+          id: req.user.id,
         },
         raw: true,
       });
@@ -142,12 +142,14 @@ module.exports = {
   like: async (req, res) => {
     try {
       const { UserId, BlogId } = req.body;
+      console.log(req.body)
       const response = await user.findOne({
         where: {
-          id: req.params.id,
+          id: req.user.id,
         },
       });
-
+      console.log(req.user)
+      console.log(response);
       if (response.isVerified === false)
         throw `Account is not verified, please verify first`;
       // const data = await blog.findOne({
@@ -162,6 +164,7 @@ module.exports = {
       res.status(200).send("Like added");
     } catch (err) {
       res.status(400).send(err);
+      console.log(err);
     }
   },
 
@@ -194,7 +197,7 @@ module.exports = {
         order: [["createdAt", "DESC"]],
         include: [{ model: blog }],
         where: {
-          UserId: req.params.UserId,
+          UserId: req.user.id,
         },
       });
       res.status(200).send(data);
@@ -347,7 +350,7 @@ module.exports = {
         },
         {
           where: {
-            id: req.params.id,
+            id: req.user.id,
           },
         }
       );

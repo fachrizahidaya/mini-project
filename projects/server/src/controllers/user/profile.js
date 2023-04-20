@@ -26,14 +26,14 @@ module.exports = {
         },
         {
           where: {
-            id: req.params.id,
+            id: req.user.id,
           },
         }
       );
 
       const getProfile = await user.findOne({
         where: {
-          id: req.params.id,
+          id: req.user.id,
         },
         raw: true,
       });
