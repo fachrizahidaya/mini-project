@@ -14,7 +14,7 @@ module.exports = (sequelize, DataTypes) => {
   }
   Keyword.init(
     {
-      keyword: DataTypes.STRING,
+      name: DataTypes.STRING,
     },
     {
       sequelize,

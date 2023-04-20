@@ -5,6 +5,8 @@ const { join } = require("path");
 const db = require("./models");
 const bearerToken = require("express-bearer-token");
 const path = require("path");
+const imgMiddleware = require("./middleware/multer");
+const bodyParser = require("body-parser");
 
 const PORT = process.env.PORT || 8000;
 const app = express();
@@ -20,13 +22,31 @@ app.use(
 app.use(express.json());
 app.use("/Public", express.static(path.join(__dirname, "/Public")));
 app.use(bearerToken());
+app.use(bodyParser.json());
 
 //#region API ROUTES
+
+const {
+  authUser,
+  profileUser,
+  blogUser,
+  authAdmin,
+  catAdmin,
+  blogAdmin,
+} = require("./routers");
 
 // ===========================
 // NOTE : Add your routes here
 
-const { authUser,profileUser } = require("./routers");
+// user
+app.use("/api/authUser", authUser);
+app.use("/api/profileUser", profileUser);
+app.use("/api/blogUser", blogUser);
+
+// admin
+app.use("/api/authAdmin", authAdmin);
+app.use("/api/catAdmin", catAdmin);
+app.use("/api/blogAdmin", blogAdmin);
 
 app.get("/api", (req, res) => {
   res.send(`Hello, this is my API`);

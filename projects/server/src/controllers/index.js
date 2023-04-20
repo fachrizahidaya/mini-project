@@ -1,9 +1,21 @@
 const authUser = require("./user/auth")
 const profileUser = require("./user/profile");
 const authAdmin = require("./admin/auth");
+// user
+const authUser = require("../controllers/user/auth");
+const profileUser = require("../controllers/user/profile");
+const blogUser = require("../controllers/user/blog");
+// admin
+const authAdmin = require("../controllers/admin/auth");
+const catAdmin = require("../controllers/admin/category");
+const blogAdmin = require("../controllers/admin/blog");
 
 module.exports = {
   authUser,
   profileUser,
-  authAdmin
+  authAdmin,
+  blogUser,
+  authAdmin,
+  catAdmin,
+  blogAdmin,
 };

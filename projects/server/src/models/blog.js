@@ -11,8 +11,9 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
       Blog.belongsTo(models.User);
       Blog.hasMany(models.Blog_Keyword);
-      Blog.hasMany(models.Blog_Category);
+      // Blog.hasMany(models.Blog_Category);
       Blog.hasMany(models.Like);
+      Blog.belongsTo(models.Category);
     }
   }
   Blog.init(
@@ -21,18 +22,27 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         allowNull: false,
       },
-      imageURL: DataTypes.STRING,
-      content: DataTypes.STRING,
+      imageURL: {
+        type: DataTypes.STRING,
+        // allowNull: false,
+      },
+      content: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
       videoURL: DataTypes.STRING,
       country: {
         type: DataTypes.STRING,
-        allowNull: false,
+        // allowNull: false,
       },
       isPublished: {
         type: DataTypes.BOOLEAN,
         defaultValue: false,
       },
-      isDeleted: DataTypes.BOOLEAN,
+      isDeleted: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false,
+      },
     },
     {
       sequelize,

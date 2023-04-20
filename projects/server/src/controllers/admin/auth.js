@@ -9,41 +9,37 @@ const transporter = require("../../middleware/transporter");
 module.exports = {
   register: async (req, res) => {
     try {
-      try {
-        const { username, email, phone, password, confirmPassword } = req.body;
-        if (password !== confirmPassword)
-          throw "Password and confirm password are not match";
-        if (password.length !== 6) throw "Password minimum 6 characters";
-        const salt = await bcrypt.genSalt();
-        const hashPassword = await bcrypt.hash(password, salt);
-        const data = await user.create({
-          username,
-          email,
-          phone,
-          password: hashPassword,
-        });
-        const token = jwt.sign({ email: email }, secretKey, {
-          expiresIn: "1h",
-        });
-        const tempEmail = fs.readFileSync("./src/template/admin.html", "utf-8");
-        const tempCompile = handlebars.compile(tempEmail);
-        const tempResult = tempCompile({
-          email,
-        });
-        await transporter.sendMail({
-          from: "Purwadhika Team",
-          to: email,
-          subject: "Admin Activation",
-          html: tempResult,
-        });
-        res.status(200).send({
-          message: "Please check your Email to verify your Account",
-          data,
-          token,
-        });
-      } catch (err) {
-        res.status(400).send(err);
-      }
+      const { username, email, phone, password, confirmPassword } = req.body;
+      if (password !== confirmPassword)
+        throw "Password and confirm password are not match";
+      if (password.length !== 6) throw "Password minimum 6 characters";
+      const salt = await bcrypt.genSalt();
+      const hashPassword = await bcrypt.hash(password, salt);
+      const data = await user.create({
+        username,
+        email,
+        phone,
+        password: hashPassword,
+      });
+      const token = jwt.sign({ email: email }, secretKey, {
+        expiresIn: "1h",
+      });
+      const tempEmail = fs.readFileSync("./src/template/admin.html", "utf-8");
+      const tempCompile = handlebars.compile(tempEmail);
+      const tempResult = tempCompile({
+        email,
+      });
+      await transporter.sendMail({
+        from: "Purwadhika Team",
+        to: email,
+        subject: "Admin Activation",
+        html: tempResult,
+      });
+      res.status(200).send({
+        message: "Please check your Email to verify your Account",
+        data,
+        token,
+      });
     } catch (err) {
       res.status(400).send(err);
     }
