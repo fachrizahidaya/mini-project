@@ -13,6 +13,7 @@ const blogAdmin = require("../controllers/admin/blog");
 module.exports = {
   authUser,
   profileUser,
+  blogUser,
   authAdmin,
   blogUser,
   authAdmin,
