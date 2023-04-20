@@ -1,6 +1,3 @@
-const authUser = require("./user/auth")
-const profileUser = require("./user/profile");
-const authAdmin = require("./admin/auth");
 // user
 const authUser = require("../controllers/user/auth");
 const profileUser = require("../controllers/user/profile");
