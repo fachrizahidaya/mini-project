@@ -38,6 +38,8 @@ export const RegistrationForm = () => {
       .oneOf([Yup.ref("password"), null], "Password does not matched"),
   });
 
+  console.log(process.env.REACT_APP_API_BASE_URL);
+
   const onRegister = async (item) => {
     try {
       await axios.post("/authUser/register", item);

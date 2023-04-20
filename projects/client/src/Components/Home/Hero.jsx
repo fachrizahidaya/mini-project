@@ -22,7 +22,7 @@ export const HeroHome = () => {
         <PopularArticle />
       </Flex>
       <VStack>
-        <ArticleList />
+        <ArticleList w={{ xl: "1150px", base: "full" }} />
       </VStack>
     </Box>
   );

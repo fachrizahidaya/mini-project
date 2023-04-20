@@ -21,7 +21,6 @@ import { Verification } from './pages/Verification';
 import { VerifyForm } from './pages/VerifyForm';
 import { setAuth } from './redux/userSlice';
 
-
 const router = createBrowserRouter([
   {
     path: '/',
