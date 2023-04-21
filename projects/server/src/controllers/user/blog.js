@@ -142,14 +142,11 @@ module.exports = {
   like: async (req, res) => {
     try {
       const { UserId, BlogId } = req.body;
-      console.log(req.body)
       const response = await user.findOne({
         where: {
           id: req.user.id,
         },
       });
-      console.log(req.user)
-      console.log(response);
       if (response.isVerified === false)
         throw `Account is not verified, please verify first`;
       // const data = await blog.findOne({
@@ -157,10 +154,19 @@ module.exports = {
       // });
       // console.log(data.id);
 
+      const data = await like.findOne({
+        where: {
+          UserId: response.id,
+          BlogId,
+        },
+      });
+      if (data) throw `Blog already liked`;
+
       const result = await like.create({
         UserId: response.id,
         BlogId,
       });
+
       res.status(200).send("Like added");
     } catch (err) {
       res.status(400).send(err);
@@ -281,6 +287,57 @@ module.exports = {
         order: [["createdAt", `${sort1}`]],
         limit: size1,
         offset: start,
+        raw: true,
+      });
+      res.status(200).send(result);
+    } catch (err) {
+      res.status(400).send(err);
+    }
+  },
+
+  pagFavorite: async (req, res) => {
+    try {
+      const { id_cat, search, sort } = req.query;
+      const cat1 = id_cat;
+      const sort1 = sort || "DESC";
+      const page1 = parseInt(req.query.page) + 1 || 1;
+      const size1 = parseInt(req.query.size) || 8;
+      const search1 = search || "";
+      const start = (page1 - 1) * size1;
+      const condition = page1 * start;
+      const result = await like.findAll({
+        attributes: [
+          "BlogId",
+          [Sequelize.fn("count", Sequelize.col("BlogId")), "total_fav"],
+          [Sequelize.literal("Blog.title"), "title"],
+          "UserId",
+          // [Sequelize.literal("Category.id"), "id"],
+          // [Sequelize.literal("Category.name"), "category_name"],
+        ],
+        include: [
+          {
+            model: blog,
+            attributes: [],
+            where: {
+              title: { [Op.like]: `%${search1}%` },
+              CategoryId: { [Op.like]: `%${cat1}%` },
+            },
+            include: [
+              {
+                model: category,
+                attributes: ["name"],
+              },
+            ],
+          },
+          {
+            model: user,
+            attributes: ["username"],
+          },
+        ],
+        group: ["BlogId"],
+        order: [[Sequelize.literal("total_fav"), `${sort1}`]],
+        limit: 8,
+        offset: 0,
         raw: true,
       });
       res.status(200).send(result);
