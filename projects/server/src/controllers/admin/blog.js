@@ -5,6 +5,7 @@ const blogCategory = db.Blog_Category;
 const category = db.Category;
 const user = db.User;
 const keyword = db.Keyword;
+const blogKeyword = db.Blog_Keyword;
 
 module.exports = {
   allBlog: async (req, res) => {
@@ -38,8 +39,9 @@ module.exports = {
 
   pagBlog: async (req, res) => {
     try {
-      const { id_cat, search, sort, size } = req.query;
+      const { id_cat, search, sort, size, id_key } = req.query;
       const cat1 = id_cat;
+      const idKey1 = id_key;
       const sort1 = sort || "DESC";
       const page1 = parseInt(req.query.page) + 1 || 1;
       const size1 = parseInt(size) || 8;
@@ -59,9 +61,15 @@ module.exports = {
             {
               isDeleted: false,
             },
+            // {
+            //   "$Blog_Keyword.Keyword.id$": { [Op.like]: `%${idKey1}%` },
+            // },
           ],
         },
         attributes: ["id", "title", "CategoryId"],
+        order: [["createdAt", `${sort1}`]],
+        limit: size1,
+        offset: start,
         include: [
           {
             model: user,
@@ -71,10 +79,11 @@ module.exports = {
             model: category,
             attributes: ["id", "name"],
           },
+          // {
+          //   model: blogKeyword,
+          //   include: [{ model: keyword }],
+          // },
         ],
-        order: [["createdAt", `${sort1}`]],
-        limit: size1,
-        offset: start,
         raw: true,
       });
       const totalRows = await blog.count({
@@ -104,6 +113,7 @@ module.exports = {
       });
     } catch (err) {
       res.status(400).send(err);
+      console.log(err);
     }
   },
 
@@ -118,4 +128,84 @@ module.exports = {
       res.status(400).send(err);
     }
   },
+
+  save: async (req, res) => {
+    try {
+      const { id_cat, search, sort, size, id_key } = req.query;
+      const cat1 = id_cat;
+      const idKey1 = id_key;
+      const sort1 = sort || "DESC";
+      const page1 = parseInt(req.query.page) + 1 || 1;
+      const size1 = parseInt(size) || 8;
+      const search1 = search || "";
+      const start = (page1 - 1) * size1;
+      const blogs = await blogKeyword.findAll({
+        include: [
+          {
+            model: blog,
+            include: [
+              {
+                model: user,
+                attributes: ["id", "username"],
+              },
+              {
+                model: category,
+                attributes: ["id", "name"],
+              },
+            ],
+            where: {
+              title: {
+                [Op.like]: "%%",
+              },
+              CategoryId: {
+                [Op.like]: "%%",
+              },
+            },
+            order: [["createdAt", "DESC"]],
+          },
+          {
+            model: keyword,
+            attributes: ["id", "name"],
+            where: {
+              id: {
+                [Op.like]: "%%",
+              },
+            },
+          },
+        ],
+        attributes: ["id"],
+        limit: 8,
+      });
+
+      const blogsIds = blogs.map((blog) => blog.BlogId);
+
+      const result = await blog.findAll({
+        where: {
+          id: {
+            [Op.in]: blogsIds,
+          },
+        },
+        include: [
+          {
+            model: user,
+            attributes: ["id", "username"],
+          },
+          {
+            model: category,
+            attributes: ["id", "name"],
+          },
+          {
+            model: keyword,
+            attributes: ["id", "name"],
+          },
+        ],
+        order: [["createdAt", "DESC"]],
+      });
+      res.status(200).send("success");
+    } catch (err) {
+      res.status(400).send(err);
+    }
+  },
 };
+
+// storage code

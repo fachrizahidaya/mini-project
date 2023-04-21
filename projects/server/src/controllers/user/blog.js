@@ -250,7 +250,31 @@ module.exports = {
         offset: start,
         raw: true,
       });
-      res.status(200).send(result);
+      const totalRows = await blog.count({
+        where: {
+          [Op.and]: [
+            {
+              CategoryId: {
+                [Op.like]: `%${cat1}%`,
+              },
+            },
+            {
+              title: { [Op.like]: `%${search1}%` },
+            },
+            {
+              isDeleted: false,
+            },
+          ],
+        },
+      });
+      const totalPage = Math.ceil(totalRows / size1);
+      res.status(200).send({
+        page: totalPage,
+        rows: totalRows,
+        blogPage: page1,
+        listLimit: size1,
+        result,
+      });
     } catch (err) {
       res.status(400).send(err);
     }
@@ -289,7 +313,31 @@ module.exports = {
         offset: start,
         raw: true,
       });
-      res.status(200).send(result);
+      const totalRows = await blog.count({
+        where: {
+          [Op.and]: [
+            {
+              CategoryId: {
+                [Op.like]: `%${cat1}%`,
+              },
+            },
+            {
+              title: { [Op.like]: `%${search1}%` },
+            },
+            {
+              isDeleted: false,
+            },
+          ],
+        },
+      });
+      const totalPage = Math.ceil(totalRows / size1);
+      res.status(200).send({
+        page: totalPage,
+        rows: totalRows,
+        blogPage: page1,
+        listLimit: size1,
+        result,
+      });
     } catch (err) {
       res.status(400).send(err);
     }
@@ -340,7 +388,31 @@ module.exports = {
         offset: 0,
         raw: true,
       });
-      res.status(200).send(result);
+      const totalRows = await blog.count({
+        where: {
+          [Op.and]: [
+            {
+              CategoryId: {
+                [Op.like]: `%${cat1}%`,
+              },
+            },
+            {
+              title: { [Op.like]: `%${search1}%` },
+            },
+            {
+              isDeleted: false,
+            },
+          ],
+        },
+      });
+      const totalPage = Math.ceil(totalRows / size1);
+      res.status(200).send({
+        page: totalPage,
+        rows: totalRows,
+        blogPage: page1,
+        listLimit: size1,
+        result,
+      });
     } catch (err) {
       res.status(400).send(err);
     }
