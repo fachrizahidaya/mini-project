@@ -25,7 +25,7 @@ module.exports = {
       const payload = {
         username: data.username,
         email: data.email,
-        phone: data.password,
+        phone: data.phone,
         password: data.password,
         id: data.id,
         isVerified: data.isVerified,
