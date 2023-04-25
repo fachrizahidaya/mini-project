@@ -42,6 +42,7 @@ module.exports = {
       const { id_cat, search, sort, size, id_key } = req.query;
       const cat1 = id_cat;
       const idKey1 = id_key;
+      // parseInt(req.query.id_key);
       const sort1 = sort || "DESC";
       const page1 = parseInt(req.query.page) + 1 || 1;
       const size1 = parseInt(size) || 8;
@@ -66,7 +67,7 @@ module.exports = {
             // },
           ],
         },
-        attributes: ["id", "title", "CategoryId"],
+        // attributes: ["id", "title", "CategoryId"],
         order: [["createdAt", `${sort1}`]],
         limit: size1,
         offset: start,
@@ -79,12 +80,17 @@ module.exports = {
             model: category,
             attributes: ["id", "name"],
           },
-          // {
-          //   model: blogKeyword,
-          //   include: [{ model: keyword }],
-          // },
+          {
+            model: blogKeyword,
+            where: {
+              KeywordId:
+                // "$Blog_Keyword.Keyword.id$"
+                { [Op.like]: `%${idKey1}%` },
+            },
+            include: [{ model: keyword }],
+          },
         ],
-        raw: true,
+        // raw: true,
       });
       const totalRows = await blog.count({
         where: {
