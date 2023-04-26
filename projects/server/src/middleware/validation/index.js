@@ -1,4 +1,4 @@
-const { check, validationResult } = require("express-validator");
+const { check, validationResult, oneOf } = require("express-validator");
 const db = require("../../models");
 const {
   existingEmail,
@@ -73,19 +73,26 @@ exports.validationRegister = [
 ];
 
 exports.validationLogin = [
-  check("usernamePhoneEmail", "Account must not empty")
-    .notEmpty()
-    .custom((value) =>
-      existingAccount(value)
-        .then((status) => {
-          if (status) {
-            return Promise.reject("Account not found or Incorrect Password");
-          }
-        })
-        .catch((err) => {
-          return Promise.reject(err);
-        })
-    ),
+  oneOf(
+    [
+      check('username').notEmpty().withMessage('username must not empty'),
+      check('email').notEmpty().withMessage('email must not empty'),
+      check('phone').notEmpty().withMessage('phone must not empty'),
+    ]
+  ),
+  // check("usernamePhoneEmail", "Account must not empty")
+  //   .notEmpty()
+  //   .custom((value) =>
+  //     existingAccount(value)
+  //       .then((status) => {
+  //         if (status) {
+  //           return Promise.reject("Account not found or Incorrect Password");
+  //         }
+  //       })
+  //       .catch((err) => {
+  //         return Promise.reject(err);
+  //       })
+  //   ),
   check("password", "Password must not empty").notEmpty(),
   // .custom((value) =>
   //   existingPassword(value)

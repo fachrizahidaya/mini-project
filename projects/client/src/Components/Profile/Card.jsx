@@ -3,6 +3,7 @@ import { useEffect } from "react";
 import { BsHeart, BsListUl, BsPerson, BsKey } from "react-icons/bs";
 import { OptButton } from "./OptButton";
 import { useNavigate, useLocation } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 const option = [
   {
@@ -25,6 +26,10 @@ const option = [
 
 export const ProfileCard = () => {
   const navigate = useNavigate();
+
+  const { username, email, imgProfile } = useSelector(
+    (state) => state.user.value
+  );
   const location = useLocation();
   const current = location.pathname
     .split("/")[2]
@@ -52,12 +57,12 @@ export const ProfileCard = () => {
         p={4}
         textAlign={"center"}
       >
-        <Avatar name="ilham" size={"xl"} src="https://bit.ly/dan-abramov" />
+        <Avatar size={"xl"} src={`http://localhost:8000/${imgProfile}` || "https://bit.ly/broken-link"} />
         <Heading mt="4" fontSize={"2xl"}>
-          Ilham hidayatulloh
+          {username}
         </Heading>
         <Text fontSize="12px" color={"blue.500"} mb={4}>
-          ilhamhidayatulloh@gmail.com
+          {email}
         </Text>
 
         <Box w="inherit">

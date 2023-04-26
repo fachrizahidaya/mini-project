@@ -10,8 +10,12 @@ import { Form, Formik } from "formik";
 import { useRef, useState } from "react";
 import * as Yup from "yup";
 import { BsCamera } from "react-icons/bs";
+import { useSelector } from "react-redux";
+import { axios } from "../../helper/axios";
 
 export const UpdateProfilePic = () => {
+  const token = localStorage.getItem("token");
+  const { imgProfile } = useSelector((state) => state.user.value);
   const fileRef = useRef(null);
   const [image, setImage] = useState(null);
   const validationSchema = Yup.object().shape({
@@ -25,15 +29,26 @@ export const UpdateProfilePic = () => {
   });
 
   const handleUpload = async () => {
-    const data = new FormData();
-    data.append("userId", 1);
-    data.append("fileUploaded", image);
-    console.log(data);
+    try {
+      const data = new FormData();
+      data.append("userId", 1);
+      data.append("file", image);
+      await axios.post("/profileUser/single-uploaded", data, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        "Content-Type": "multipart/form-data",
+        // withCredentials: true,
+      });
+    } catch (err) {
+      console.log(err);
+    }
   };
+
   return (
     <Formik
       initialValues={{
-        file: "https://bit.ly/dan-abramov",
+        file: `${`http://localhost:8000/${imgProfile}` || "https://bit.ly/broken-link"}`,
       }}
       validationSchema={validationSchema}
       onSubmit={() => {
@@ -57,7 +72,6 @@ export const UpdateProfilePic = () => {
             />
             <Stack>
               <Avatar
-                name="ilham"
                 size={"xl"}
                 src={image ? URL.createObjectURL(image) : values.file}
               >
