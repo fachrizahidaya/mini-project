@@ -16,11 +16,13 @@ import {
 import { RxHamburgerMenu } from "react-icons/rx";
 import { CgClose } from "react-icons/cg";
 import { BiSearchAlt } from "react-icons/bi";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { AvatarNavbar } from "./AvatarNavbar";
 
 export const Navbar = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const navigate = useNavigate();
+  const token = localStorage.getItem("token");
 
   return (
     <>
@@ -96,36 +98,48 @@ export const Navbar = () => {
             </HStack>
           </HStack>
 
-          <HStack display={{ base: "none", lg: "flex" }} alignItems={"center"}>
-            <Menu>
-              <Button
-                bgColor="orange"
-                color="white"
-                _hover={{ bgColor: "white", color: "orange" }}
-                variant="solid"
-                onClick={() => navigate("/login")}
-              >
-                Login
+          {token ? (
+            <Flex
+              display={{ base: "none", lg: "flex" }}
+              alignItems={"center"}
+              gap='4'
+            >
+              <AvatarNavbar />
+              <Button bgColor="orange" size="sm" color="white">
+                Create
               </Button>
-              <Button
-                color="white"
-                _hover={{ color: "orange" }}
-                variant="ghost"
-                onClick={() => navigate("/register")}
-              >
-                Register
-              </Button>
-            </Menu>
-          </HStack>
+            </Flex>
+          ) : (
+            <HStack
+              display={{ base: "none", lg: "flex" }}
+              spacing="3"
+              alignItems={"center"}
+            >
+              <Menu>
+                <Button
+                  bgColor="orange"
+                  color="white"
+                  _hover={{ bgColor: "white", color: "orange" }}
+                  variant="solid"
+                  onClick={() => navigate("/login")}
+                >
+                  Login
+                </Button>
+                <Button
+                  color="white"
+                  _hover={{ color: "orange" }}
+                  variant="ghost"
+                  onClick={() => navigate("/register")}
+                >
+                  Register
+                </Button>
+              </Menu>
+            </HStack>
+          )}
 
-          <IconButton
-            display={{ base: "flex", lg: "none" }}
-            bgColor={"blue.500"}
-            color="white"
-            size={"md"}
-            icon={<BiSearchAlt />}
-            fontSize="20px"
-          />
+          <HStack display={{ base: "flex", lg: "none" }} alignItems={"center"}>
+            <AvatarNavbar />
+          </HStack>
         </Flex>
 
         {isOpen ? (
@@ -181,23 +195,37 @@ export const Navbar = () => {
                     >
                       Categories
                     </Button>
-                    <Button
-                      bgColor="orange"
-                      color="white"
-                      _hover={{ bgColor: "white", color: "orange" }}
-                      variant="solid"
-                      onClick={() => navigate("/login")}
-                    >
-                      Login
-                    </Button>
-                    <Button
-                      color="white"
-                      _hover={{ color: "orange" }}
-                      variant="ghost"
-                      onClick={() => navigate("/register")}
-                    >
-                      Register
-                    </Button>
+                    {token ? (
+                      <Button
+                        disabled={token}
+                        color="white"
+                        _hover={{ color: "orange" }}
+                        variant="ghost"
+                        onClick={() => navigate("/category")}
+                      >
+                        Create
+                      </Button>
+                    ) : (
+                      <>
+                        <Button
+                          bgColor="orange"
+                          color="white"
+                          _hover={{ bgColor: "white", color: "orange" }}
+                          variant="solid"
+                          onClick={() => navigate("/login")}
+                        >
+                          Login
+                        </Button>
+                        <Button
+                          color="white"
+                          _hover={{ color: "orange" }}
+                          variant="ghost"
+                          onClick={() => navigate("/register")}
+                        >
+                          Register
+                        </Button>
+                      </>
+                    )}
                   </Stack>
                 </Box>
               </DrawerBody>

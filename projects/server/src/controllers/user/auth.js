@@ -83,31 +83,34 @@ module.exports = {
 
   login: async (req, res) => {
     try {
-      const { usernamePhoneEmail, password, id } = req.body;
+      const { username, email, phone, password } = req.body;
       const isAccountExist = await user.findOne({
         where: {
           [Op.or]: {
-            username: usernamePhoneEmail ? usernamePhoneEmail : "",
-            email: usernamePhoneEmail ? usernamePhoneEmail : "",
-            phone: usernamePhoneEmail ? usernamePhoneEmail : "",
-            id: id ? id : 0,
+            username: username || "",
+            email: email || "",
+            phone: phone || "",
           },
         },
-        raw: true,
       });
+
+      if (!isAccountExist) throw "Acoount not found";
+      if (!isAccountExist.isVerified) throw "Acoount not verify";
+      
+      const isValid = await bcrypt.compare(password, isAccountExist.password);
+      if (!isValid) throw "Incorrect Password";
+
       const payload = {
         email: isAccountExist.email,
         id: isAccountExist.id,
-        isVerified: isAccountExist.isVerified,
       };
       const token = jwt.sign(payload, secretKey);
-      const isValid = await bcrypt.compare(password, isAccountExist.password);
-      if (!isValid) throw "Incorrect Password";
       res
         .status(200)
         .send({ message: "Welcome to Blog", isAccountExist, token });
     } catch (err) {
       res.status(400).send(err);
+      console.log(err);
     }
   },
 

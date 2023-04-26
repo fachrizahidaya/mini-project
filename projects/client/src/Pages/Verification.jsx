@@ -9,24 +9,36 @@ import {
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { useNavigate, Link as RouterLink } from "react-router-dom";
+import { useNavigate, Link as RouterLink, useParams } from "react-router-dom";
 import { CheckCircleIcon, CloseIcon } from "@chakra-ui/icons";
+import { axios } from "../helper/axios";
 
 export const Verification = () => {
+  const params = useParams();
   const navigate = useNavigate();
   const [isloading, setiIsLoading] = useState(true);
   const [succes, setSucces] = useState(true);
 
-  const onVerify = () => {
-    setTimeout(() => {
+  const onVerify = async () => {
+    try {
+      await axios.patch(
+        "/authUser/verify",
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${params.token}`,
+          },
+        }
+      );
       setiIsLoading(false);
-    }, 2000);
-
-    setTimeout(() => {
-      navigate("/login");
-    }, 3000);
-
-    setiIsLoading(true);
+      setTimeout(() => {
+        navigate("/login");
+      }, 1000);
+    } catch (err) {
+      console.log(err);
+      setSucces(false);
+      setiIsLoading(false);
+    }
   };
 
   useEffect(() => {

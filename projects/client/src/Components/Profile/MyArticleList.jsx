@@ -1,5 +1,5 @@
 import { Flex, Stack } from "@chakra-ui/react";
-import { CardBlogEdited } from "../ListBlog/CardEdited";
+import { CardBlogEdited } from "../listBlog/CardEdited";
 
 export const MyArticleList = ({w}) => {
   const data = [1, 2, 3, 4, 5, 6, 7, 8];
