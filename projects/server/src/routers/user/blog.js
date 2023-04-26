@@ -32,7 +32,8 @@ router.get("/byId/:id", blogUser.findById);
 router.get("/userLike", verifyToken, blogUser.findUserLike);
 router.get("/pagUser", blogUser.pagUser);
 router.get("/pagLike", blogUser.pagLike);
+router.get("/pagFav", blogUser.pagFavorite);
 router.get("/vidThumb/:id", blogUser.videoThumb);
 router.delete("/unlike/:idBlog", verifyToken, blogUser.unlike);
-
+  
 module.exports = router;
