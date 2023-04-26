@@ -1,6 +1,6 @@
 import { Box, Flex } from "@chakra-ui/react";
-import { BlogRead } from "../Components/BlogDetail/BlogRead";
-import { PopularArticle } from "../Components/Home/Popular";
+import { BlogRead } from "../components/blogDetail/BlogRead";
+import { PopularArticle } from "../components/home/Popular";
 
 export const BlogDetail = () => {
   return (
