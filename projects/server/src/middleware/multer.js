@@ -9,10 +9,8 @@ const storage = multer.diskStorage({
   filename: (req, file, cb) => {
     cb(
       null,
-      "PIMG" +
-        "-" +
-        Date.now() +
-        Math.round(Math.random() * 100000) +
+      "Avatar" +
+        "-" + req.user.id +
         "." +
         file.mimetype.split("/")[1]
     );

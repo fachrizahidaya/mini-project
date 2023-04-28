@@ -10,7 +10,7 @@ import {
 import { Link as RouterLink } from "react-router-dom";
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
-import { PassField } from "../../Components/TextField";
+import { PassField } from "../TextField";
 
 export const ChangePass = ({ ...props }) => {
   const validationRegister = Yup.object().shape({

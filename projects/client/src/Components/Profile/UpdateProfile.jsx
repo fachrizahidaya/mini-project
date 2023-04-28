@@ -1,21 +1,13 @@
-import {
-  Flex,
-  Box,
-  Stack,
-  Button,
-  Heading,
-  useColorModeValue,
-  Avatar,
-  AvatarBadge,
-  Icon,
-} from "@chakra-ui/react";
+import { Flex, Box, Stack, Button, useColorModeValue } from "@chakra-ui/react";
 import { Formik, Form } from "formik";
+import { useSelector } from "react-redux";
 import * as Yup from "yup";
-import { PassField, TextField } from "../../Components/TextField";
-import { BsCamera } from "react-icons/bs";
+import { TextField } from "../../Components/TextField";
 import { UpdateProfilePic } from "./UpdateProfilePic";
 
 export const UpdateProfile = ({ ...props }) => {
+  const { username, email, phone } = useSelector((state) => state.user.value);
+  console.log({ username, email, phone });
   const validation = Yup.object().shape({
     username: Yup.string()
       .required("username is required")
@@ -51,9 +43,9 @@ export const UpdateProfile = ({ ...props }) => {
             <Box w="full">
               <Formik
                 initialValues={{
-                  username: "Ilham Hidayatulloh",
-                  email: "ilhamhidayatulloh59@gmail.com",
-                  phone: "081223766365",
+                  username,
+                  email,
+                  phone,
                 }}
                 validationSchema={validation}
                 onSubmit={(values) => {

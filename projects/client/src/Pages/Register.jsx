@@ -12,9 +12,12 @@ import { motion } from "framer-motion";
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
 import { PassField, TextField } from "../Components/TextField";
+import { axios } from "../helper/axios";
+import { useCustomToast } from "../Components/Toast";
 
 export const RegistrationForm = () => {
   const navigate = useNavigate();
+  const customToast = useCustomToast();
 
   const validationRegister = Yup.object().shape({
     username: Yup.string()
@@ -35,13 +38,25 @@ export const RegistrationForm = () => {
       .oneOf([Yup.ref("password"), null], "Password does not matched"),
   });
 
-  console.log(process.env.REACT_APP_API_BASE_URL);
-
   const onRegister = async (item) => {
     try {
-      console.log(item);
+      await axios.post("/authUser/register", item);
+      customToast({
+        title: "Succes",
+        description:
+          "register succes, please check your email to verify account",
+        status: "succes",
+      });
+      setTimeout(() => {
+        navigate("/login");
+      }, 3000);
     } catch (err) {
       console.log(err);
+      customToast({
+        title: "Warning",
+        description: `${err.data || err.data.message}`,
+        status: "warning",
+      });
     }
   };
 

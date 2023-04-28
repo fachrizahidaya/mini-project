@@ -7,6 +7,7 @@ import {
   useColorModeValue,
   Text,
   Button,
+  useToast,
 } from "@chakra-ui/react";
 import { useState } from "react";
 import { BsPhone, BsPerson, BsEnvelope } from "react-icons/bs";
@@ -15,6 +16,10 @@ import { Formik, Form } from "formik";
 import * as Yup from "yup";
 import { useNavigate, Link as RouterLink } from "react-router-dom";
 import { PassField, TextField } from "../Components/TextField";
+import { useCustomToast } from "../Components/Toast";
+import { axios } from "../helper/axios";
+import { setAuth } from "../redux/userSlice";
+import { useDispatch } from "react-redux";
 
 const loginopt = [
   {
@@ -46,12 +51,35 @@ const loginopt = [
 
 export const LoginForm = () => {
   const [current, setCurrent] = useState(0);
+  const customToast = useCustomToast();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const onLogin = async (item) => {
     try {
-      console.log(item);
-    } catch (err) {}
+      const user = await axios.post("/authUser/login", item);
+      const { username, email, phone, imgProfile } = user.data.isAccountExist;
+
+      customToast({
+        title: "Success",
+        description: "Login Succes",
+        status: "success",
+      });
+
+      dispatch(setAuth({ username, email, phone, imgProfile }));
+      localStorage.setItem("token", user.data.token);
+      
+      setTimeout(() => {
+        navigate("/");
+      }, 3000);
+    } catch (err) {
+      console.log(err);
+      customToast({
+        title: "Warning",
+        description: `${err.response.data}`,
+        status: "warning",
+      });
+    }
   };
 
   const handleCurrent = (item) => {
