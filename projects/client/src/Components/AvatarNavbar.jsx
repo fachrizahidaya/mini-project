@@ -33,7 +33,10 @@ export const AvatarNavbar = () => {
         <Flex align="center">
           <Avatar
             size={{ base: "sm", md: "md" }}
-            src={`http://localhost:8000/${imgProfile}` || "https://bit.ly/broken-link"}
+            src={
+              `http://localhost:8000/${imgProfile}` ||
+              "https://bit.ly/broken-link"
+            }
           />
         </Flex>
       </MenuButton>

@@ -2,7 +2,7 @@ import { Flex, Box, Stack, Button, useColorModeValue } from "@chakra-ui/react";
 import { Formik, Form } from "formik";
 import { useSelector } from "react-redux";
 import * as Yup from "yup";
-import { TextField } from "../../components/TextField";
+import { TextField } from "../../Components/TextField";
 import { UpdateProfilePic } from "./UpdateProfilePic";
 
 export const UpdateProfile = ({ ...props }) => {

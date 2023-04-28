@@ -1,4 +1,4 @@
-import { HeroHome } from "../components/home/Hero";
+import { HeroHome } from "../Components/Home/Hero";
 import { Stack } from "@chakra-ui/layout";
 import { useSelector } from "react-redux";
 

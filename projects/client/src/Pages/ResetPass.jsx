@@ -11,7 +11,7 @@ import { motion } from "framer-motion";
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
 import { useNavigate, Link as RouterLink } from "react-router-dom";
-import { TextField } from "../components/TextField";
+import { TextField } from "../Components/TextField";
 
 export const ResetPass = () => {
   const navigate = useNavigate();
