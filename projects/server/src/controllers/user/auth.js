@@ -74,7 +74,6 @@ module.exports = {
       );
       res.status(200).send({
         message: "Verification success",
-        data: isAccountExist,
       });
     } catch (err) {
       res.status(400).send(err);
