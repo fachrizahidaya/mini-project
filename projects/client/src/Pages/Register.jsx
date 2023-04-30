@@ -42,10 +42,10 @@ export const RegistrationForm = () => {
     try {
       await axios.post("/authUser/register", item);
       customToast({
-        title: "Succes",
+        title: "Success",
         description:
           "register succes, please check your email to verify account",
-        status: "succes",
+        status: "success",
       });
       setTimeout(() => {
         navigate("/login");

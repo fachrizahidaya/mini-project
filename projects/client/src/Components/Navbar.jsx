@@ -102,10 +102,15 @@ export const Navbar = () => {
             <Flex
               display={{ base: "none", lg: "flex" }}
               alignItems={"center"}
-              gap='4'
+              gap="4"
             >
               <AvatarNavbar />
-              <Button bgColor="orange" size="sm" color="white">
+              <Button
+                bgColor="orange"
+                size="sm"
+                color="white"
+                onClick={() => navigate("/create")}
+              >
                 Create
               </Button>
             </Flex>
@@ -201,7 +206,7 @@ export const Navbar = () => {
                         color="white"
                         _hover={{ color: "orange" }}
                         variant="ghost"
-                        onClick={() => navigate("/category")}
+                        onClick={() => navigate("/create")}
                       >
                         Create
                       </Button>

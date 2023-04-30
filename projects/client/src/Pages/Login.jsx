@@ -40,7 +40,7 @@ const loginopt = [
   },
   {
     icon: BsPhone,
-    title: "phonenumber",
+    title: "phone",
     label: "Phone Number",
     type: "text",
     yup: Yup.string()
@@ -68,7 +68,6 @@ export const LoginForm = () => {
 
       dispatch(setAuth({ username, email, phone, imgProfile }));
       localStorage.setItem("token", user.data.token);
-      
       setTimeout(() => {
         navigate("/");
       }, 3000);
@@ -110,6 +109,12 @@ export const LoginForm = () => {
           >
             <Stack mb="4" align={"center"}>
               <Heading fontSize={"4xl"}>Sign in</Heading>
+              <Text fontSize="12px">
+                Not verified ?{" "}
+                <Text as={RouterLink} color="blue.500" to={"/verify"}>
+                  verify
+                </Text>
+              </Text>
             </Stack>
             <Flex gap="4" w="full" justify="center" mb="4">
               {loginopt.map((item, index) => {

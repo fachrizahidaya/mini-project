@@ -10,14 +10,15 @@ import RequireAuth from './components/RequireAuth';
 import { axios } from './helper/axios';
 import { BlogPage } from './pages/Blog';
 import { BlogDetail } from './pages/BlogDetail';
+import { CreateBlog } from './pages/CreateBlog';
 import { ErrorPage } from './pages/Error';
 import { HomePage } from './pages/Home';
 import { LoginForm } from './pages/Login';
 import { Profile } from './pages/Profile';
 import { RegistrationForm } from './pages/Register';
 import { ResetPass } from './pages/ResetPass';
-import { CardCarousel } from './pages/Test';
 import { Verification } from './pages/Verification';
+import { VerifyForm } from './pages/VerifyForm';
 import { setAuth } from './redux/userSlice';
 
 
@@ -29,14 +30,14 @@ const router = createBrowserRouter([
     children: [
       { path: '/', element: <BlogPage/> },
       { path: '/blog', element: <BlogDetail/> },
-      { path: '/test', element: <CardCarousel/> },
       {
         // halaman diakses harus login
         element: <RequireAuth />,
         children: [
+          { path: '/create', element: <CreateBlog/> },
           { path: '/account',
-            element: <Profile/>,
-            children: [
+          element: <Profile/>,
+          children: [
               { path: '/account/my-article', element: <MyArticleList/> },
               { path: '/account/favorite-article', element: <ArticleList/> },
               { path: '/account/profile-setting', element: <UpdateProfile/> },

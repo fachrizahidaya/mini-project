@@ -9,6 +9,7 @@ module.exports = {
       token = token.split(" ")[1];
       if (token === null) throw "Unauthorized request";
       let verifiedUser = jwt.verify(token, secretKey);
+      console.log(verifiedUser);
       if (!verifiedUser) throw "Token verification failed";
       req.user = verifiedUser;
       next();
