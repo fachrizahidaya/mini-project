@@ -15,6 +15,7 @@ import {
 } from "@chakra-ui/react";
 import { RxHamburgerMenu } from "react-icons/rx";
 import { CgClose } from "react-icons/cg";
+import { BiSearchAlt } from "react-icons/bi";
 import { useNavigate } from "react-router-dom";
 import { AvatarNavbar } from "./AvatarNavbar";
 

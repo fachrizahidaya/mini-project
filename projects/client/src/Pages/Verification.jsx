@@ -21,7 +21,6 @@ export const Verification = () => {
 
   const onVerify = async () => {
     try {
-      console.log(params);
       await axios.patch(
         "/authUser/verify",
         {},
