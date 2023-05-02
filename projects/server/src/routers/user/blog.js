@@ -1,6 +1,7 @@
 const router = require("express").Router();
 const { blogUser } = require("../../controllers/index");
 const { multerUpload } = require("../../middleware/multer");
+const { multerBlogUpload } = require("../../middleware/multerBlog");
 const {
   validationBlog,
   runValidation,
@@ -12,7 +13,7 @@ router.post(
   verifyToken,
   // validationBlog,
   // runValidation,
-  multerUpload.single("file"),
+  multerBlogUpload.single("file"),
   blogUser.create
 );
 router.post(
@@ -35,5 +36,5 @@ router.get("/pagLike", blogUser.pagLike);
 router.get("/pagFav", blogUser.pagFavorite);
 router.get("/vidThumb/:id", blogUser.videoThumb);
 router.delete("/unlike/:idBlog", verifyToken, blogUser.unlike);
-  
+
 module.exports = router;
