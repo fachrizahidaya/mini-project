@@ -24,7 +24,7 @@ module.exports = {
       let fileUploaded = req.file;
       const response = await user.findOne({
         where: {
-          id: req.params.id,
+          id: req.user.id,
         },
       });
 
@@ -45,9 +45,9 @@ module.exports = {
       if (!CategoryId) throw `Category must not be empty`;
 
       // id keyword yang mau masuk 5,6
+      const t = await db.sequelize.transaction();
       try {
-        const t = await Sequelize.transaction();
-        const result = await blog.create(
+        var result = await blog.create(
           {
             title: title,
             content: content,
@@ -60,6 +60,13 @@ module.exports = {
             transaction: t,
           }
         );
+        // console.log(result);
+        const response1 = await blog.findOne({
+          where: {
+            id: result.id,
+          },
+        });
+        console.log(response1.id);
 
         keywords.split(" ").map(async (item) => {
           const idKeyword = await keyword.findOrCreate(
@@ -85,14 +92,15 @@ module.exports = {
         await t.commit();
       } catch (err) {
         await t.rollback();
+        console.log(err);
       }
-
       res.status(200).send({
         message: "Success Added",
         data: result,
       });
     } catch (err) {
       res.status(400).send(err);
+      console.log(err);
     }
   },
 
