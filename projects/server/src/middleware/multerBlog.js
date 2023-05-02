@@ -7,7 +7,16 @@ const storage = multer.diskStorage({
   },
 
   filename: (req, file, cb) => {
-    cb(null, "Blog" + "-" + req.user.id + "." + file.mimetype.split("/")[1]);
+    // console.log(req);
+    cb(
+      null,
+      "Blog" +
+        "-" +
+        Date.now() +
+        Math.round(Math.random() * 1000000) +
+        "." +
+        file.mimetype.split("/")[1]
+    );
   },
 });
 
