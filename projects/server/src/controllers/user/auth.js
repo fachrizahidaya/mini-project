@@ -243,7 +243,7 @@ module.exports = {
         },
       });
       const token = jwt.sign({ email: email }, secretKey, { expiresIn: "1h" });
-      const tempEmail = fs.readFileSync("./src/template/email.html", "utf-8");
+      const tempEmail = fs.readFileSync("./src/template/re-verify.html", "utf-8");
       const tempCompile = handlebars.compile(tempEmail);
       const tempResult = tempCompile({
         link: `http://localhost:3000/verification/${token}`,
@@ -259,6 +259,7 @@ module.exports = {
         token,
       });
     } catch (err) {
+      console.log(err);
       res.status(400).send(err);
     }
   },

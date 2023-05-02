@@ -1,5 +1,5 @@
-import { HeroHome } from "../Components/Home/Hero";
-import { Stack } from "@chakra-ui/layout";
+import { HeroHome } from "../components/home/Hero";
+import { Stack } from "@chakra-ui/react";
 import { useSelector } from "react-redux";
 
 export const BlogPage = () => {

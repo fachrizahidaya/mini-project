@@ -38,7 +38,6 @@ export const UpdateProfilePic = () => {
           Authorization: `Bearer ${token}`,
         },
         "Content-Type": "multipart/form-data",
-        // withCredentials: true,
       });
     } catch (err) {
       console.log(err);
