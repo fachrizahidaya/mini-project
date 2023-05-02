@@ -74,7 +74,6 @@ module.exports = {
       );
       res.status(200).send({
         message: "Verification success",
-        data: isAccountExist,
       });
     } catch (err) {
       res.status(400).send(err);
@@ -96,7 +95,7 @@ module.exports = {
 
       if (!isAccountExist) throw "Acoount not found";
       if (!isAccountExist.isVerified) throw "Acoount not verify";
-      
+
       const isValid = await bcrypt.compare(password, isAccountExist.password);
       if (!isValid) throw "Incorrect Password";
 
@@ -110,7 +109,6 @@ module.exports = {
         .send({ message: "Welcome to Blog", isAccountExist, token });
     } catch (err) {
       res.status(400).send(err);
-      console.log(err);
     }
   },
 
@@ -242,8 +240,18 @@ module.exports = {
           email: email,
         },
       });
-      const token = jwt.sign({ email: email }, secretKey, { expiresIn: "1h" });
-      const tempEmail = fs.readFileSync("./src/template/re-verify.html", "utf-8");
+
+      if (response.isVerified === true) throw `Account is verified`;
+      const payload = {
+        id: response.id,
+        email: response.email,
+      };
+
+      const token = jwt.sign(payload, secretKey, { expiresIn: "1h" });
+      const tempEmail = fs.readFileSync(
+        "./src/template/re-verify.html",
+        "utf-8"
+      );
       const tempCompile = handlebars.compile(tempEmail);
       const tempResult = tempCompile({
         link: `http://localhost:3000/verification/${token}`,
