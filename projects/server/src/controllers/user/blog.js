@@ -63,37 +63,24 @@ module.exports = {
             transaction: t,
           }
         );
-        // console.log(result);
-        const response1 = await blog.findOne({
-          where: {
-            id: result.id,
-          },
-        });
-        // console.log(response1.id);
 
-        keywords.split(" ").map(async (item) => {
-          console.log(item);
-          const idKeyword = await keyword.findOrCreate(
-            {
-              where: {
-                name: item,
-              },
-            },
-            {
-              transaction: t,
-            }
-          );
-          console.log(idKeyword[0].dataValues.id);
+        await Promise.all(keywords.split("  ").map(async (item) => {
+          const [KeywordId, created] = await keyword.findOrCreate({
+            where: { name: item },
+            transaction: t
+          });
+
           await blogKeyword.create(
             {
               BlogId: result.id,
-              KeywordId: idKeyword[0].dataValues.id,
+              KeywordId: KeywordId.dataValues.id,
             },
             {
               transaction: t,
             }
           );
-        });
+        }));
+
         await t.commit();
       } catch (err) {
         await t.rollback();
