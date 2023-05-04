@@ -1,5 +1,5 @@
 const router = require("express").Router();
-const { profileUser } = require("../../controllers");
+const { profile } = require("../../controllers");
 const { multerUpload } = require("../../middleware/multer");
 const { verifyToken } = require("../../middleware/verifyToken");
 
@@ -7,7 +7,7 @@ router.post(
   "/single-uploaded",
   verifyToken,
   multerUpload.single("file"),
-  profileUser.uploadPic
+  profile.uploadPic
 );
 
 module.exports = router;

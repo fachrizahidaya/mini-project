@@ -26,27 +26,17 @@ app.use(bodyParser.json());
 
 //#region API ROUTES
 
-const {
-  authUser,
-  profileUser,
-  blogUser,
-  authAdmin,
-  catAdmin,
-  blogAdmin,
-} = require("./routers");
+const { auth, profile, blog } = require("./routers");
 
 // ===========================
 // NOTE : Add your routes here
 
 // user
-app.use("/api/authUser", authUser);
-app.use("/api/profileUser", profileUser);
-app.use("/api/blogUser", blogUser);
+app.use("/api/auth", auth);
+app.use("/api/profile", profile);
+app.use("/api/blog", blog);
 
 // admin
-app.use("/api/authAdmin", authAdmin);
-app.use("/api/catAdmin", catAdmin);
-app.use("/api/blogAdmin", blogAdmin);
 
 app.get("/api", (req, res) => {
   res.send(`Hello, this is my API`);

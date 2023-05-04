@@ -14,8 +14,6 @@ const youtubeThumbnail = require(local);
 module.exports = {
   create: async (req, res) => {
     try {
-      console.log(req.body);
-      console.log(req.file);
       const { title, content, CategoryId, url, keywords } = req.body;
       // const key1 = parseInt(id_key);
       const allowedTypes = [
@@ -72,9 +70,7 @@ module.exports = {
               },
               transaction: t,
             });
-            if (created) {
-              console.log(KeywordId.name);
-            }
+
             await blogKeyword.create(
               {
                 BlogId: result.id,
@@ -95,7 +91,6 @@ module.exports = {
         data: result,
       });
     } catch (err) {
-      console.log(err);
       res.status(400).send(err);
     }
   },
@@ -153,10 +148,6 @@ module.exports = {
       });
       if (response.isVerified === false)
         throw `Account is not verified, please verify first`;
-      // const data = await blog.findOne({
-      //   idBlog: req.params.id,
-      // });
-      // console.log(data.id);
 
       const data = await like.findOne({
         where: {
@@ -189,9 +180,53 @@ module.exports = {
           "UserId",
           "CategoryId",
         ],
-        include: [{ model: category, attributes: ["name"] }],
+        include: [
+          { model: category, attributes: ["name"] },
+          { model: user, attributes: ["username", "imgProfile"] },
+          {
+            model: blogKeyword,
+            include: [{ model: keyword }],
+          },
+        ],
         where: {
-          UserId: req.params.id,
+          id: req.params.id,
+        },
+      });
+      res.status(200).send(data);
+    } catch (err) {
+      res.status(400).send(err);
+    }
+  },
+
+  findByIdAuth: async (req, res) => {
+    try {
+      const data = await blog.findAll({
+        attributes: [
+          "id",
+          "title",
+          "content",
+          "imageURL",
+          "videoURL",
+          "UserId",
+          "CategoryId",
+        ],
+        include: [
+          { model: category, attributes: ["name"] },
+          { model: user, attributes: ["username", "imgProfile"] },
+          {
+            model: like,
+            where: {
+              UserId: req.user.id,
+            },
+            required: false,
+          },
+          {
+            model: blogKeyword,
+            include: [{ model: keyword }],
+          },
+        ],
+        where: {
+          id: req.params.id,
         },
       });
       res.status(200).send(data);
@@ -217,19 +252,19 @@ module.exports = {
 
   pagUser: async (req, res) => {
     try {
-      const { id_cat, idUser, search, sort } = req.query;
-      const cat1 = id_cat;
+      const { id_cat, search, sort, size, page } = req.query;
+      const cat1 = id_cat || "";
       const sort1 = sort || "DESC";
-      const page1 = parseInt(req.query.page) + 1 || 1;
-      const size1 = parseInt(req.query.size) || 8;
+      const page1 = parseInt(page) || 1;
+      const size1 = parseInt(size) || 8;
       const search1 = search || "";
       const start = (page1 - 1) * size1;
-      const condition = page1 * start;
+
       const result = await blog.findAll({
         where: {
           [Op.and]: [
             {
-              UserId: idUser,
+              UserId: req.user.id,
             },
             {
               CategoryId: {
@@ -251,11 +286,14 @@ module.exports = {
         order: [["createdAt", `${sort1}`]],
         limit: size1,
         offset: start,
-        raw: true,
       });
+      console.log(result);
       const totalRows = await blog.count({
         where: {
           [Op.and]: [
+            {
+              UserId: req.user.id,
+            },
             {
               CategoryId: {
                 [Op.like]: `%${cat1}%`,
@@ -270,6 +308,7 @@ module.exports = {
           ],
         },
       });
+      console.log(totalRows);
       const totalPage = Math.ceil(totalRows / size1);
       res.status(200).send({
         page: totalPage,
@@ -286,9 +325,9 @@ module.exports = {
   pagLike: async (req, res) => {
     try {
       const { id_cat, idUser, search, sort } = req.query;
-      const cat1 = id_cat;
+      const cat1 = id_cat || "";
       const sort1 = sort || "DESC";
-      const page1 = parseInt(req.query.page) + 1 || 1;
+      const page1 = parseInt(req.query.page) || 1;
       const size1 = parseInt(req.query.size) || 8;
       const search1 = search || "";
       const start = (page1 - 1) * size1;
@@ -349,21 +388,19 @@ module.exports = {
   pagFavorite: async (req, res) => {
     try {
       const { id_cat, search, sort } = req.query;
-      const cat1 = id_cat;
+      const cat1 = id_cat || "";
       const sort1 = sort || "DESC";
-      const page1 = parseInt(req.query.page) + 1 || 1;
+      const page1 = parseInt(req.query.page) || 1;
       const size1 = parseInt(req.query.size) || 8;
       const search1 = search || "";
       const start = (page1 - 1) * size1;
-      const condition = page1 * start;
+
       const result = await like.findAll({
         attributes: [
           "BlogId",
           [Sequelize.fn("count", Sequelize.col("BlogId")), "total_fav"],
           [Sequelize.literal("Blog.title"), "title"],
           "UserId",
-          // [Sequelize.literal("Category.id"), "id"],
-          // [Sequelize.literal("Category.name"), "category_name"],
         ],
         include: [
           {
@@ -387,8 +424,8 @@ module.exports = {
         ],
         group: ["BlogId"],
         order: [[Sequelize.literal("total_fav"), `${sort1}`]],
-        limit: 8,
-        offset: 0,
+        limit: size1,
+        offset: start,
         raw: true,
       });
       const totalRows = await blog.count({
@@ -492,6 +529,288 @@ module.exports = {
         },
       });
       res.status(200).send(edit);
+    } catch (err) {
+      res.status(400).send(err);
+    }
+  },
+
+  allCategory: async (req, res) => {
+    try {
+      const data = await category.findAll({
+        attributes: ["id", "name"],
+      });
+      res.status(200).send(data);
+    } catch (err) {
+      res.status(400).send(err);
+    }
+  },
+
+  pagBlog: async (req, res) => {
+    try {
+      const { id_cat, search, sort, size, id_key, page } = req.query;
+      const cat1 = id_cat || "";
+      const idKey1 = id_key;
+      const sort1 = sort || "DESC";
+      const page1 = parseInt(page) || 1;
+      const size1 = parseInt(size) || 8;
+      const search1 = search || "";
+      const start = (page1 - 1) * size1;
+      const result = await blog.findAll({
+        where: {
+          [Op.and]: [
+            {
+              CategoryId: {
+                [Op.like]: `%${cat1}%`,
+              },
+            },
+            {
+              title: { [Op.like]: `%${search1}%` },
+            },
+            {
+              isDeleted: false,
+            },
+          ],
+        },
+
+        order: [["createdAt", `${sort1}`]],
+        limit: size1,
+        offset: start,
+        include: [
+          {
+            model: user,
+            attributes: ["username"],
+          },
+          {
+            model: category,
+            attributes: ["id", "name"],
+          },
+          {
+            model: blogKeyword,
+            where: {
+              KeywordId: { [Op.like]: `%${idKey1}%` },
+            },
+            include: [{ model: keyword }],
+            required: false,
+          },
+        ],
+      });
+      const totalRows = await blog.count({
+        where: {
+          [Op.and]: [
+            {
+              CategoryId: {
+                [Op.like]: `%${cat1}%`,
+              },
+            },
+            {
+              title: { [Op.like]: `%${search1}%` },
+            },
+            {
+              isDeleted: false,
+            },
+          ],
+        },
+      });
+      const totalPage = Math.ceil(totalRows / size1);
+      res.status(200).send({
+        page: totalPage,
+        rows: totalRows,
+        blogPage: page1,
+        listLimit: size1,
+        result,
+      });
+    } catch (err) {
+      res.status(400).send(err);
+    }
+  },
+
+  pagBlogLogin: async (req, res) => {
+    try {
+      const { id_cat, search, sort, size, id_key, page } = req.query;
+      const cat1 = id_cat;
+      const idKey1 = id_key;
+
+      const sort1 = sort || "DESC";
+      const page1 = parseInt(page) + 1 || 1;
+      const size1 = parseInt(size) || 8;
+      const search1 = search || "";
+      const start = (page1 - 1) * size1;
+      const result = await blog.findAll({
+        where: {
+          [Op.and]: [
+            {
+              CategoryId: {
+                [Op.like]: `%${cat1}%`,
+              },
+            },
+            {
+              title: { [Op.like]: `%${search1}%` },
+            },
+            {
+              isDeleted: false,
+            },
+          ],
+        },
+
+        order: [["createdAt", `${sort1}`]],
+        limit: size1,
+        offset: start,
+        include: [
+          {
+            model: user,
+            attributes: ["username"],
+          },
+          {
+            model: category,
+            attributes: ["id", "name"],
+          },
+          {
+            model: blogKeyword,
+            where: {
+              KeywordId: { [Op.like]: `%${idKey1}%` },
+            },
+            include: [{ model: keyword }],
+          },
+        ],
+      });
+      const totalRows = await blog.count({
+        where: {
+          [Op.and]: [
+            {
+              CategoryId: {
+                [Op.like]: `%${cat1}%`,
+              },
+            },
+            {
+              title: { [Op.like]: `%${search1}%` },
+            },
+            {
+              isDeleted: false,
+            },
+          ],
+        },
+      });
+      const totalPage = Math.ceil(totalRows / size1);
+      res.status(200).send({
+        page: totalPage,
+        rows: totalRows,
+        blogPage: page1,
+        listLimit: size1,
+        result,
+      });
+    } catch (err) {
+      res.status(400).send(err);
+    }
+  },
+
+  createKey: async (req, res) => {
+    try {
+      const { name } = req.body;
+      const data = await keyword.create({
+        name: name,
+      });
+      res.status(200).send(data);
+    } catch (err) {
+      res.status(400).send(err);
+    }
+  },
+
+  save: async (req, res) => {
+    try {
+      const { id_cat, search, sort, size, id_key } = req.query;
+      const cat1 = id_cat;
+      const idKey1 = id_key;
+      const sort1 = sort || "DESC";
+      const page1 = parseInt(req.query.page) + 1 || 1;
+      const size1 = parseInt(size) || 8;
+      const search1 = search || "";
+      const start = (page1 - 1) * size1;
+      const blogs = await blogKeyword.findAll({
+        include: [
+          {
+            model: blog,
+            include: [
+              {
+                model: user,
+                attributes: ["id", "username"],
+              },
+              {
+                model: category,
+                attributes: ["id", "name"],
+              },
+            ],
+            where: {
+              title: {
+                [Op.like]: "%%",
+              },
+              CategoryId: {
+                [Op.like]: "%%",
+              },
+            },
+            order: [["createdAt", "DESC"]],
+          },
+          {
+            model: keyword,
+            attributes: ["id", "name"],
+            where: {
+              id: {
+                [Op.like]: "%%",
+              },
+            },
+          },
+        ],
+        attributes: ["id"],
+        limit: 8,
+      });
+
+      const blogsIds = blogs.map((blog) => blog.BlogId);
+
+      const result = await blog.findAll({
+        where: {
+          id: {
+            [Op.in]: blogsIds,
+          },
+        },
+        include: [
+          {
+            model: user,
+            attributes: ["id", "username"],
+          },
+          {
+            model: category,
+            attributes: ["id", "name"],
+          },
+          {
+            model: keyword,
+            attributes: ["id", "name"],
+          },
+        ],
+        order: [["createdAt", "DESC"]],
+      });
+      res.status(200).send("success");
+    } catch (err) {
+      res.status(400).send(err);
+    }
+  },
+
+  createCategory: async (req, res) => {
+    try {
+      const { name } = req.body;
+      const result = await category.create({
+        name,
+      });
+      res.status(200).send(result);
+    } catch (err) {
+      res.status(400).send(err);
+    }
+  },
+
+  findAll: async (req, res) => {
+    try {
+      const data = await category.findAll({
+        attributes: ["id", "name"],
+      });
+      res.status(200).send(data);
     } catch (err) {
       res.status(400).send(err);
     }

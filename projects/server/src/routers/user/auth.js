@@ -1,6 +1,6 @@
 const router = require("express").Router();
 const { verifyToken } = require("../../middleware/verifyToken");
-const { authUser } = require("../../controllers");
+const { auth } = require("../../controllers");
 const {
   validationRegister,
   runValidation,
@@ -13,51 +13,51 @@ const {
   validationChangePhone,
 } = require("../../middleware/validation");
 
-router.post("/register", validationRegister, runValidation, authUser.register);
-router.patch("/verify", verifyToken, authUser.verification);
-router.post("/login", validationLogin, runValidation, authUser.login);
-router.get("/keepLogin", authUser.keepLogin);
+router.post("/register", validationRegister, runValidation, auth.register);
+router.patch("/verify", verifyToken, auth.verification);
+router.post("/login", validationLogin, runValidation, auth.login);
+router.get("/keepLogin", auth.keepLogin);
 router.put(
   "/forgotPass",
   validationEmail,
   runValidation,
-  authUser.forgotPassword
+  auth.forgotPassword
 );
 router.patch(
   "/resetPass",
   verifyToken,
   validationReset,
   runValidation,
-  authUser.resetPassword
+  auth.resetPassword
 );
 router.patch(
   "/changePass",
   verifyToken,
   validationChangePass,
   runValidation,
-  authUser.changePassword
+  auth.changePassword
 );
-router.post("/secondVer", authUser.secondVerification);
+router.post("/secondVer", auth.secondVerification);
 router.patch(
   "/changeEmail",
   verifyToken,
   validationChangeEmail,
   runValidation,
-  authUser.changeEmail
+  auth.changeEmail
 );
 router.patch(
   "/changeUsername",
   verifyToken,
   validationChangeUsername,
   runValidation,
-  authUser.changeUsername
+  auth.changeUsername
 );
 router.patch(
   "/changePhone",
   verifyToken,
   validationChangePhone,
   runValidation,
-  authUser.changePhone
+  auth.changePhone
 );
 
 module.exports = router;
