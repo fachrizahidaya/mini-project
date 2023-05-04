@@ -8,12 +8,15 @@ import {
   Tag,
 } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
+import { convertDate } from "../../helper/date";
 
 export const CardBlog = ({ data }) => {
+  const { imageURL, title, createdAt, id } = data;
   const navigate = useNavigate();
+  const date = convertDate(createdAt);
 
   const handleClick = () => {
-    navigate("/blog");
+    navigate(`/blog?title=${title}&id=${id}`);
   };
 
   return (
@@ -30,9 +33,7 @@ export const CardBlog = ({ data }) => {
           bg={"gray.100"}
           h={{ xl: "200px", base: "250px" }}
           borderRadius="xl"
-          backgroundImage={
-            "url(https://s3.ap-southeast-1.amazonaws.com/static.lontara.app/ee543415-3914-44dc-8776-99716f1a7e81.jpg)"
-          }
+          backgroundImage={`url(http://localhost:8000/${imageURL})`}
           backgroundRepeat="no-repeat"
           backgroundSize="cover"
           backgroundPosition={"center center"}
@@ -56,7 +57,7 @@ export const CardBlog = ({ data }) => {
         </Box>
         <Stack m={2}>
           <Heading fontSize="sm" fontFamily={"body"}>
-            Judul Artikel ke - {data}
+            {title}
           </Heading>
         </Stack>
         <Stack m={2} direction={"row"} spacing={4} align={"center"}>
@@ -70,7 +71,7 @@ export const CardBlog = ({ data }) => {
               Ilham Hidayatulloh
             </Text>
             <Text fontSize="x-small" color={"gray.500"}>
-              Feb 08, 2021
+              {date}
             </Text>
           </Stack>
         </Stack>

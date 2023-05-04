@@ -143,7 +143,7 @@ export const Navbar = () => {
           )}
 
           <HStack display={{ base: "flex", lg: "none" }} alignItems={"center"}>
-            <AvatarNavbar />
+            {token ? <AvatarNavbar /> : null}
           </HStack>
         </Flex>
 
@@ -202,7 +202,6 @@ export const Navbar = () => {
                     </Button>
                     {token ? (
                       <Button
-                        disabled={token}
                         color="white"
                         _hover={{ color: "orange" }}
                         variant="ghost"

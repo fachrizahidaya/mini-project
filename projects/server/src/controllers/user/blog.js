@@ -186,10 +186,14 @@ module.exports = {
           "videoURL",
           "UserId",
           "CategoryId",
+          "createdAt",
         ],
-        include: [{ model: category, attributes: ["name"] }],
+        include: [
+          { model: category, attributes: ["name"] },
+          { model: user, attributes: ["username", "imgProfile"] },
+        ],
         where: {
-          UserId: req.params.id,
+          id: req.params.id,
         },
       });
       res.status(200).send(data);

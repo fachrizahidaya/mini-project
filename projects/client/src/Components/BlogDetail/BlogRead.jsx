@@ -1,4 +1,5 @@
 import {
+  chakra,
   Flex,
   Avatar,
   Box,
@@ -7,44 +8,65 @@ import {
   Text,
   Image,
 } from "@chakra-ui/react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
+import { axios } from "../../helper/axios";
+import { convertDate } from "../../helper/date";
 
 export const BlogRead = () => {
+  const [data, setData] = useState([]);
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+  const itemId = searchParams.get("id");
 
-    useEffect(() => {
-        window.scrollTo(0, 0);
-      }, []);
+  console.log(itemId);
+
+  const getData = async () => {
+    const { data } = await axios.get(`/blogUser/byId/${itemId}`);
+    console.log(data);
+    setData(data);
+  };
+
+  useEffect(() => {
+    getData();
+    window.scrollTo(0, 0);
+  }, []);
 
   return (
     <Box maxW="750px" w="full">
-      <Stack gap="2">
-        <Heading>Judul Artikel Disini</Heading>
-        <Flex align="center" gap="4">
-          <Avatar size="sm" />
-          <Text fontSize="small" color="grey">
-            ilham hidayatulloh . category . 12 mei 2023
-          </Text>
-        </Flex>
-        <Flex justifyContent='center'>
-          <Image
-            borderRadius="2xl"
-            src="https://s3.ap-southeast-1.amazonaws.com/static.lontara.app/ee543415-3914-44dc-8776-99716f1a7e81.jpg"
-          />
-        </Flex>
-        <Box px={{xl: '10', base: '4'}} textAlign='justify'>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Mollitia ex, esse maiores illo perspiciatis nobis, animi fugit praesentium beatae distinctio earum iusto, doloremque quae tempore! Eos suscipit rerum temporibus provident.
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Mollitia ex, esse maiores illo perspiciatis nobis, animi fugit praesentium beatae distinctio earum iusto, doloremque quae tempore! Eos suscipit rerum temporibus provident.
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Mollitia ex, esse maiores illo perspiciatis nobis, animi fugit praesentium beatae distinctio earum iusto, doloremque quae tempore! Eos suscipit rerum temporibus provident.
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Mollitia ex, esse maiores illo perspiciatis nobis, animi fugit praesentium beatae distinctio earum iusto, doloremque quae tempore! Eos suscipit rerum temporibus provident.
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Mollitia ex, esse maiores illo perspiciatis nobis, animi fugit praesentium beatae distinctio earum iusto, doloremque quae tempore! Eos suscipit rerum temporibus provident.
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Mollitia ex, esse maiores illo perspiciatis nobis, animi fugit praesentium beatae distinctio earum iusto, doloremque quae tempore! Eos suscipit rerum temporibus provident.
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Mollitia ex, esse maiores illo perspiciatis nobis, animi fugit praesentium beatae distinctio earum iusto, doloremque quae tempore! Eos suscipit rerum temporibus provident.
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Mollitia ex, esse maiores illo perspiciatis nobis, animi fugit praesentium beatae distinctio earum iusto, doloremque quae tempore! Eos suscipit rerum temporibus provident.
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Mollitia ex, esse maiores illo perspiciatis nobis, animi fugit praesentium beatae distinctio earum iusto, doloremque quae tempore! Eos suscipit rerum temporibus provident.
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Mollitia ex, esse maiores illo perspiciatis nobis, animi fugit praesentium beatae distinctio earum iusto, doloremque quae tempore! Eos suscipit rerum temporibus provident.
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Mollitia ex, esse maiores illo perspiciatis nobis, animi fugit praesentium beatae distinctio earum iusto, doloremque quae tempore! Eos suscipit rerum temporibus provident.
-        </Box>
-      </Stack>
+      {data.map((item, index) => {
+        return (
+          <Stack gap="2" key={index}>
+            <Heading fontSize={{ md: "40px", base: "25px" }}>
+              {item.title}
+            </Heading>
+            <Flex align="center" gap="4">
+              <Avatar
+                size="sm"
+                src={`http://localhost:8000/${item.User.imgProfile}`}
+              />
+              <Text fontSize="small" color="grey">
+                {`${item.User.username} . ${item.Category.name} . ${convertDate(
+                  item.createdAt
+                )}`}
+              </Text>
+            </Flex>
+            <Flex justifyContent="center" px={{ xl: "10", base: "4" }}>
+              <Image
+                borderRadius="2xl"
+                src={`http://localhost:8000/${item.imageURL}`}
+              />
+            </Flex>
+            <Box
+              px={{ xl: "10", base: "4" }}
+              fontSize={{ md: "14px", base: "12px" }}
+              textAlign="justify"
+            >
+              <chakra.div dangerouslySetInnerHTML={{ __html: item.content }} />
+            </Box>
+          </Stack>
+        );
+      })}
     </Box>
   );
 };
