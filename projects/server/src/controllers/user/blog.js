@@ -60,39 +60,32 @@ module.exports = {
             transaction: t,
           }
         );
-        // console.log(result);
-        const response1 = await blog.findOne({
-          where: {
-            id: result.id,
-          },
-        });
-        console.log(response1.id);
 
-        keywords.split(" ").map(async (item) => {
-          const idKeyword = await keyword.findOrCreate(
-            {
+        await Promise.all(
+          keywords.split(" ").map(async (item) => {
+            const [KeywordId, created] = await keyword.findOrCreate({
               where: {
                 name: item,
               },
-            },
-            {
               transaction: t,
+            });
+            if (created) {
+              console.log(KeywordId.name);
             }
-          );
-          await blogKeyword.create(
-            {
-              BlogId: result.id,
-              KeywordId: idKeyword[0].dataValues.id,
-            },
-            {
-              transaction: t,
-            }
-          );
-        });
+            await blogKeyword.create(
+              {
+                BlogId: result.id,
+                KeywordId: KeywordId.dataValues.id,
+              },
+              {
+                transaction: t,
+              }
+            );
+          })
+        );
         await t.commit();
       } catch (err) {
         await t.rollback();
-        console.log(err);
       }
       res.status(200).send({
         message: "Success Added",
@@ -100,7 +93,6 @@ module.exports = {
       });
     } catch (err) {
       res.status(400).send(err);
-      console.log(err);
     }
   },
 
@@ -178,7 +170,6 @@ module.exports = {
       res.status(200).send("Like added");
     } catch (err) {
       res.status(400).send(err);
-      console.log(err);
     }
   },
 
