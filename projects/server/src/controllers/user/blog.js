@@ -69,7 +69,7 @@ module.exports = {
             id: result.id,
           },
         });
-        console.log(response1.id);
+        // console.log(response1.id);
 
         keywords.split(" ").map(async (item) => {
           console.log(item);
@@ -96,7 +96,6 @@ module.exports = {
         });
         await t.commit();
       } catch (err) {
-        console.log(err);
         await t.rollback();
         console.log(err);
       }
