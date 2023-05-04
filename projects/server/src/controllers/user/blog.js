@@ -1,4 +1,5 @@
 const { Op, Sequelize } = require("sequelize");
+const { sequelize } = require("../../models");
 const db = require("../../models");
 const blog = db.Blog;
 const blogCategory = db.Blog_Category;
@@ -13,7 +14,9 @@ const youtubeThumbnail = require(local);
 module.exports = {
   create: async (req, res) => {
     try {
-      const { title, content, country, CategoryId, url, keywords } = req.body;
+      console.log(req.body);
+      console.log(req.file);
+      const { title, content, CategoryId, url, keywords } = req.body;
       // const key1 = parseInt(id_key);
       const allowedTypes = [
         "image/jpg",
@@ -51,7 +54,7 @@ module.exports = {
           {
             title: title,
             content: content,
-            UserId: response.id,
+            UserId: req.user.id,
             CategoryId: CategoryId,
             imageURL: `Public/${fileUploaded?.filename}`,
             videoURL: url,
@@ -92,6 +95,7 @@ module.exports = {
         data: result,
       });
     } catch (err) {
+      console.log(err);
       res.status(400).send(err);
     }
   },

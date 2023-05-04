@@ -12,7 +12,7 @@ export const AddPicBlog = ({ setFieldValue, values }) => {
         as={Input}
         type="file"
         name="file"
-        accept="image/png, image/jpeg, image/webp"
+        accept="image/png, image/jpeg, image/jpg"
         onChange={(e) => {
           setFieldValue("file", e.target.files[0]);
         }}

@@ -11,9 +11,9 @@ import { useNavigate, Link as RouterLink } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
-import { PassField, TextField } from "../Components/TextField";
+import { PassField, TextField } from "../components/TextField";
 import { axios } from "../helper/axios";
-import { useCustomToast } from "../Components/Toast";
+import { useCustomToast } from "../components/Toast";
 
 export const RegistrationForm = () => {
   const navigate = useNavigate();
@@ -37,6 +37,8 @@ export const RegistrationForm = () => {
       .required("Confirm password is required")
       .oneOf([Yup.ref("password"), null], "Password does not matched"),
   });
+
+  console.log(process.env.REACT_APP_API_BASE_URL);
 
   const onRegister = async (item) => {
     try {

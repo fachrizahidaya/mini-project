@@ -7,7 +7,6 @@ import {
   useColorModeValue,
   Text,
   Button,
-  useToast,
 } from "@chakra-ui/react";
 import { useState } from "react";
 import { BsPhone, BsPerson, BsEnvelope } from "react-icons/bs";
@@ -15,8 +14,8 @@ import { motion } from "framer-motion";
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
 import { useNavigate, Link as RouterLink } from "react-router-dom";
-import { PassField, TextField } from "../Components/TextField";
-import { useCustomToast } from "../Components/Toast";
+import { PassField, TextField } from "../components/TextField";
+import { useCustomToast } from "../components/Toast";
 import { axios } from "../helper/axios";
 import { setAuth } from "../redux/userSlice";
 import { useDispatch } from "react-redux";

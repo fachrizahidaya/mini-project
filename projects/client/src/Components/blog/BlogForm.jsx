@@ -1,17 +1,23 @@
 import { Box, Button, Flex, Stack } from "@chakra-ui/react";
 import { Formik, Form } from "formik";
 import { AddPicBlog } from "./AddPic";
-import { FieldBlog, FielSelectdBlog } from "./FIeldBlog";
+import { FieldBlog, FielSelectdBlog } from "./FieldBlog";
 import { TextEditor } from "./TextEditor";
 import * as Yup from "yup";
 import { KeyrwordForm } from "./KeywordForm";
+import { axios } from "../../helper/axios";
+import { useCustomToast } from "../Toast";
+import { useNavigate } from "react-router-dom";
 
 export const BlogForm = () => {
+  const customToast = useCustomToast();
+  const navigate = useNavigate();
+  const token = localStorage.getItem("token");
   const validationSchema = Yup.object().shape({
-    tittle: Yup.string().required("title is required"),
+    title: Yup.string().required("title is required"),
     content: Yup.string().required("content is required"),
-    keyword: Yup.string().required("keyword is required"),
-    categoryId: Yup.number().required("category is required"),
+    keywords: Yup.string().required("keyword is required"),
+    CategoryId: Yup.number().required("category is required"),
     file: Yup.mixed()
       .required("image is required")
       .test(
@@ -21,31 +27,59 @@ export const BlogForm = () => {
       ),
   });
 
-  const handleSubmit = (
+  const handleSubmit = async (
     values,
     { setSubmitting, setFieldValue, resetForm }
   ) => {
-    // do some stuff here
-    console.log(values);
+    try {
+      const { title, content, keywords, CategoryId, file } = values;
+      const data = new FormData();
+      data.append("title", title);
+      data.append("content", content);
+      data.append("keywords", keywords);
+      data.append("CategoryId", CategoryId);
+      data.append("file", file);
+      console.log(data);
 
-    // reset the form to its initial state
-    resetForm();
+      await axios.post("/blogUser/create", data, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        "Content-Type": "multipart/form-data",
+      });
 
-    // clear the content field using setFieldValue
-    setFieldValue("content", "");
-    setFieldValue("categoryId", "");
+      customToast({
+        title: "Success",
+        description: "Blog Created",
+        status: "success",
+      });
 
-    setSubmitting(false);
+      setTimeout(() => {
+        navigate("/account/my-article");
+      }, 1000);
+
+      // reset the form to its initial state
+      resetForm();
+
+      setSubmitting(false);
+    } catch (err) {
+      console.log(err);
+      customToast({
+        title: "Warning",
+        description: `${err.response.data}`,
+        status: "warning",
+      });
+    }
   };
 
   return (
     <Formik
       initialValues={{
-        tittle: "",
-        categoryId: "",
+        title: "",
+        CategoryId: "",
         content: "",
         file: "",
-        keyword: "",
+        keywords: "",
       }}
       validationSchema={validationSchema}
       onSubmit={handleSubmit}
@@ -72,9 +106,9 @@ export const BlogForm = () => {
                     position={{ md: "sticky", base: "relative" }}
                     top={{ md: "20", base: "none" }}
                   >
-                    <FieldBlog name="tittle" type="text" placeholder="Tittle" />
+                    <FieldBlog name="title" type="text" placeholder="Title" />
                     <FielSelectdBlog
-                      name="categoriId"
+                      name="CategoryId"
                       placeholder=" -- category -- "
                       values={values}
                       setFieldValue={setFieldValue}

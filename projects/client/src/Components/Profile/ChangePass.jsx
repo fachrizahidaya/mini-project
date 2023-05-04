@@ -31,8 +31,6 @@ export const ChangePass = ({ ...props }) => {
       .oneOf([Yup.ref("password"), null], "Password does not matched"),
   });
 
-  console.log(process.env.REACT_APP_API_BASE_URL);
-
   const onChangePass = async (item) => {
     try {
       console.log(item);
