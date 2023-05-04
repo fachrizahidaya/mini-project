@@ -1,6 +1,7 @@
 import { FormControl, Input, Select } from "@chakra-ui/react";
 import { ErrorMessage, Field } from "formik";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { axios } from "../../helper/axios";
 
 export const FieldBlog = ({ type, name, placeholder, ...props }) => {
   return (
@@ -27,25 +28,33 @@ export const FielSelectdBlog = ({
   setFieldValue,
   values,
 }) => {
+
+  const [data, setData] = useState([])
+  const getData = async () => {
+    const { data } = await axios.get("/catAdmin/allCategory");
+    setData(data)
+  };
+
   useEffect(() => {
-    document.getElementById("categoryId").value = values?.categoryId;
-  }, [values?.categoryId]);
+    getData();
+  }, []);
 
   return (
     <FormControl>
       <Select
-        onChange={(e) => setFieldValue("categoryId", e.target.value)}
+        onChange={(e) => setFieldValue("CategoryId", e.target.value)}
         type={type}
+        defaultValue={values.CategoryId}
         placeholder={placeholder}
-        id="categoryId"
+        id="CategoryId"
       >
-        <option value="1">Option 1</option>
-        <option value="2">Option 2</option>
-        <option value="3">Option 3</option>
+        {data.map((item, index) => {
+          return <option key={index} value={item.id}>{item.name}</option>;
+        })}
       </Select>
       <ErrorMessage
         component="div"
-        name="categoryId"
+        name="CategoryId"
         style={{ color: "red", fontSize: "12px" }}
       />
     </FormControl>

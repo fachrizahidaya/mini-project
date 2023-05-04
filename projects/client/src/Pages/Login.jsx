@@ -7,7 +7,6 @@ import {
   useColorModeValue,
   Text,
   Button,
-  useToast,
 } from "@chakra-ui/react";
 import { useState } from "react";
 import { BsPhone, BsPerson, BsEnvelope } from "react-icons/bs";

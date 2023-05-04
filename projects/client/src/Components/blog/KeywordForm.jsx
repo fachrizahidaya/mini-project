@@ -8,7 +8,6 @@ import {
   Tag,
   TagCloseButton,
   TagLabel,
-  Text,
 } from "@chakra-ui/react";
 import { ErrorMessage } from "formik";
 import { useEffect, useState } from "react";
@@ -19,8 +18,8 @@ export const KeyrwordForm = ({ setFieldValue, values }) => {
   );
 
   const onAdd = () => {
-    setKeywords([...keywords, document.getElementById("keyword").value]);
-    document.getElementById("keyword").value = "";
+    setKeywords([...keywords, document.getElementById("keywords").value]);
+    document.getElementById("keywords").value = "";
   };
 
   const onDelete = (index) => {
@@ -30,14 +29,14 @@ export const KeyrwordForm = ({ setFieldValue, values }) => {
   };
 
   useEffect(() => {
-    setFieldValue("keyword", keywords.join(" "));
+    setFieldValue("keywords", keywords.join(" "));
   }, [keywords]);
 
   return (
     <Box>
       <FormControl>
         <HStack>
-          <Input id="keyword" placeholder="Type a keyword" />
+          <Input id="keywords" placeholder="Type a keyword" />
           <Button fontSize="14px" variant="outline" onClick={onAdd}>
             add
           </Button>
@@ -45,11 +44,11 @@ export const KeyrwordForm = ({ setFieldValue, values }) => {
       </FormControl>
       <ErrorMessage
         component="div"
-        name="keyword"
+        name="keywords"
         style={{ color: "red", fontSize: "12px" }}
       />
       <Flex gap={2} m="2" flexWrap="wrap">
-        {(values.keyword ? values.keyword.split(" ") : []).map(
+        {(values.keywords ? values.keywords.split(" ") : []).map(
           (item, index) => {
             return (
               <Tag
