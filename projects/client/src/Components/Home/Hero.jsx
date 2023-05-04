@@ -1,6 +1,6 @@
 import { Flex, Box, VStack } from "@chakra-ui/react";
 import { useEffect } from "react";
-import { ArticleList } from "../ListBlog/ArticleList";
+import { ArticleList } from "../listBlog/ArticleList";
 import { CoverHome } from "./Cover";
 import { PopularArticle } from "./Popular";
 
