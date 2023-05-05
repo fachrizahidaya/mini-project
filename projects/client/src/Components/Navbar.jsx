@@ -15,7 +15,6 @@ import {
 } from "@chakra-ui/react";
 import { RxHamburgerMenu } from "react-icons/rx";
 import { CgClose } from "react-icons/cg";
-import { BiSearchAlt } from "react-icons/bi";
 import { useNavigate } from "react-router-dom";
 import { AvatarNavbar } from "./AvatarNavbar";
 
@@ -90,9 +89,11 @@ export const Navbar = () => {
                   color="white"
                   _hover={{ color: "orange" }}
                   variant="ghost"
-                  onClick={() => navigate("/category")}
+                  onClick={() =>
+                    navigate(`/search?search=&sort=Desc&category=&page=`)
+                  }
                 >
-                  Categories
+                  Search
                 </Button>
               </Menu>
             </HStack>
@@ -180,7 +181,10 @@ export const Navbar = () => {
                       color="white"
                       _hover={{ color: "orange" }}
                       variant="ghost"
-                      onClick={() => navigate("/landing")}
+                      onClick={() => {
+                        navigate("/landing");
+                        onClose();
+                      }}
                     >
                       Product
                     </Button>
@@ -188,7 +192,10 @@ export const Navbar = () => {
                       color="white"
                       _hover={{ color: "orange" }}
                       variant="ghost"
-                      onClick={() => navigate("/account/my-article")}
+                      onClick={() => {
+                        navigate("/account/my-article");
+                        onClose();
+                      }}
                     >
                       Account
                     </Button>
@@ -196,16 +203,22 @@ export const Navbar = () => {
                       color="white"
                       _hover={{ color: "orange" }}
                       variant="ghost"
-                      onClick={() => navigate("/category")}
+                      onClick={() => {
+                        navigate("/search");
+                        onClose();
+                      }}
                     >
-                      Categories
+                      Search
                     </Button>
                     {token ? (
                       <Button
                         color="white"
                         _hover={{ color: "orange" }}
                         variant="ghost"
-                        onClick={() => navigate("/create")}
+                        onClick={() => {
+                          navigate(`/search?search=&sort=Desc&category=&page=`);
+                          onClose();
+                        }}
                       >
                         Create
                       </Button>

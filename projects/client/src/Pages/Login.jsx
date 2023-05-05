@@ -54,9 +54,9 @@ export const LoginForm = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const onLogin = async (item) => {
+  const onLogin = async (item, { setSubmitting, resetForm }) => {
     try {
-      const user = await axios.post("/authUser/login", item);
+      const user = await axios.post("/auth/login", item);
       const { username, email, phone, imgProfile } = user.data.isAccountExist;
 
       customToast({
@@ -67,8 +67,12 @@ export const LoginForm = () => {
 
       dispatch(setAuth({ username, email, phone, imgProfile }));
       localStorage.setItem("token", user.data.token);
+
+      resetForm();
+
       setTimeout(() => {
         navigate("/");
+        setSubmitting(false);
       }, 3000);
     } catch (err) {
       console.log(err);
@@ -141,12 +145,9 @@ export const LoginForm = () => {
                   .min(6, "Password is too short"),
                 [loginopt[current].title]: loginopt[current].yup,
               })}
-              onSubmit={(values, action) => {
-                onLogin(values);
-                action.resetForm();
-              }}
+              onSubmit={onLogin}
             >
-              {(props) => {
+              {({ dirty, setFieldValue, values, isSubmitting }) => {
                 return (
                   <>
                     <Form>
@@ -184,6 +185,9 @@ export const LoginForm = () => {
                           </Stack>
                           <Button
                             bg={"blue.400"}
+                            isDisabled={!dirty || isSubmitting}
+                            isLoading={isSubmitting}
+                            loadingText="Loading .. "
                             color={"white"}
                             _hover={{
                               bg: "blue.500",

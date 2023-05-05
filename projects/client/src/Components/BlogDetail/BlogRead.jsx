@@ -19,11 +19,8 @@ export const BlogRead = () => {
   const searchParams = new URLSearchParams(location.search);
   const itemId = searchParams.get("id");
 
-  console.log(itemId);
-
   const getData = async () => {
-    const { data } = await axios.get(`/blogUser/byId/${itemId}`);
-    console.log(data);
+    const { data } = await axios.get(`/blog/${itemId}`);
     setData(data);
   };
 

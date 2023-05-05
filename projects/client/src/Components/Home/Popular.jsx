@@ -1,16 +1,34 @@
 import { Avatar } from "@chakra-ui/avatar";
 import { Button } from "@chakra-ui/button";
 import { Flex, HStack, Stack, Text, Box } from "@chakra-ui/layout";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { axios } from "../../helper/axios";
+import { convertDate } from "../../helper/date";
+import { truncateString } from "../../helper/string";
 
 export const PopularArticle = () => {
-  const data = [1, 2, 3, 4, 5];
+  // const data = [1, 2, 3, 4, 5];
   const [state, setState] = useState("Popular");
+
+  const [data, setData] = useState([]);
+  const getData = async () => {
+    const { data } = await axios.get(`/blog?size=5`);
+    setData(data.result);
+  };
+  const getDataFav = async () => {
+    const { data } = await axios.get(`/blog/pagFav?size=5`);
+    console.log(data.result);
+  };
 
   const onChangeOption = () => {
     if (state === "Popular") setState("Recent");
     else setState("Popular");
   };
+
+  useEffect(() => {
+    getData();
+    // getDataFav();
+  }, []);
   return (
     <Stack
       borderRadius="2xl"
@@ -21,7 +39,7 @@ export const PopularArticle = () => {
       border="1px"
       borderColor="gray.200"
       mt={{ base: "4", md: "0" }}
-      h='full'
+      h="full"
     >
       <Flex justify="space-evenly" w="inherit">
         <Button
@@ -44,25 +62,27 @@ export const PopularArticle = () => {
         </Button>
       </Flex>
       <Box w="inherit" p="4">
-        {data.map((item, index) => {
-          return (
-            <HStack w="full" p="3" key={index}>
-                <Avatar src="https://s3.ap-southeast-1.amazonaws.com/static.lontara.app/ee543415-3914-44dc-8776-99716f1a7e81.jpg" />
-              <Box
-                borderBottom="1px"
-                borderBottomColor="gray.200"
-                w="inherit"
-                pb="2"
-              >
-                <Text fontSize="sm" fontWeight="bold">
-                  Judul Artikel {state} {item}
-                </Text>
-                <Text fontSize="x-small">ilham hidayatulloh</Text>
-                <Text fontSize="x-small">21 Mei 2023</Text>
-              </Box>
-            </HStack>
-          );
-        })}
+        {data.map(
+          ({ imageURL, title, createdAt, id, Category, User }, index) => {
+            return (
+              <HStack w="full" p="3" key={index} cursor="pointer">
+                <Avatar src={`http://localhost:8000/${imageURL}`} />
+                <Box
+                  borderBottom="1px"
+                  borderBottomColor="gray.200"
+                  w="inherit"
+                  pb="2"
+                >
+                  <Text fontSize="sm" fontWeight="bold">
+                    {truncateString(title, 25)}
+                  </Text>
+                  <Text fontSize="x-small">{User.username}</Text>
+                  <Text fontSize="x-small">{convertDate(createdAt)}</Text>
+                </Box>
+              </HStack>
+            );
+          }
+        )}
       </Box>
     </Stack>
   );

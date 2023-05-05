@@ -11,7 +11,7 @@ import { useNavigate } from "react-router-dom";
 import { convertDate } from "../../helper/date";
 
 export const CardBlog = ({ data }) => {
-  const { imageURL, title, createdAt, id } = data;
+  const { imageURL, title, createdAt, id, Category, User } = data;
   const navigate = useNavigate();
   const date = convertDate(createdAt);
 
@@ -51,7 +51,7 @@ export const CardBlog = ({ data }) => {
               left="2"
               position="relative"
             >
-              category
+              {Category?.name}
             </Tag>
           </Box>
         </Box>
@@ -62,13 +62,13 @@ export const CardBlog = ({ data }) => {
         </Stack>
         <Stack m={2} direction={"row"} spacing={4} align={"center"}>
           <Avatar
-            src={"https://avatars0.githubusercontent.com/u/1164541?v=4"}
+            src={`http://localhost:8000/${User.imgProfile}`}
             alt={"Author"}
             size="sm"
           />
           <Stack direction={"column"} spacing={0} fontSize={"sm"}>
             <Text fontSize="x-small" fontWeight={600}>
-              Ilham Hidayatulloh
+              {User?.username}
             </Text>
             <Text fontSize="x-small" color={"gray.500"}>
               {date}
