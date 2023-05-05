@@ -179,6 +179,7 @@ module.exports = {
           "videoURL",
           "UserId",
           "CategoryId",
+          "createdAt"
         ],
         include: [
           { model: category, attributes: ["name"] },
@@ -209,6 +210,7 @@ module.exports = {
           "videoURL",
           "UserId",
           "CategoryId",
+          "createdAt"
         ],
         include: [
           { model: category, attributes: ["name"] },
@@ -276,18 +278,20 @@ module.exports = {
             },
           ],
         },
-        attributes: ["id", "title", "content", "CategoryId", "UserId"],
         include: [
           {
             model: category,
-            attributes: ["id", "name"],
+            attributes: ["name"],
+          },
+          {
+            model: user,
+            attributes: ["username", "imgProfile"],
           },
         ],
         order: [["createdAt", `${sort1}`]],
         limit: size1,
         offset: start,
       });
-      console.log(result);
       const totalRows = await blog.count({
         where: {
           [Op.and]: [
@@ -387,11 +391,11 @@ module.exports = {
 
   pagFavorite: async (req, res) => {
     try {
-      const { id_cat, search, sort } = req.query;
+      const { id_cat, search, sort, size, id_key, page } = req.query;
       const cat1 = id_cat || "";
       const sort1 = sort || "DESC";
-      const page1 = parseInt(req.query.page) || 1;
-      const size1 = parseInt(req.query.size) || 8;
+      const page1 = parseInt(page) || 1;
+      const size1 = parseInt(size) || 8;
       const search1 = search || "";
       const start = (page1 - 1) * size1;
 
@@ -578,7 +582,7 @@ module.exports = {
         include: [
           {
             model: user,
-            attributes: ["username"],
+            attributes: ["username", "imgProfile"],
           },
           {
             model: category,

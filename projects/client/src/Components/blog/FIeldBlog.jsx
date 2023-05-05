@@ -28,11 +28,10 @@ export const FielSelectdBlog = ({
   setFieldValue,
   values,
 }) => {
-
-  const [data, setData] = useState([])
+  const [data, setData] = useState([]);
   const getData = async () => {
-    const { data } = await axios.get("/catAdmin/allCategory");
-    setData(data)
+    const { data } = await axios.get("/blog/allCategory");
+    setData(data);
   };
 
   useEffect(() => {
@@ -49,7 +48,11 @@ export const FielSelectdBlog = ({
         id="CategoryId"
       >
         {data.map((item, index) => {
-          return <option key={index} value={item.id}>{item.name}</option>;
+          return (
+            <option key={index} value={item.id}>
+              {item.name}
+            </option>
+          );
         })}
       </Select>
       <ErrorMessage

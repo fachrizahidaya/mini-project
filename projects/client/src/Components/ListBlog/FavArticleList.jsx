@@ -1,17 +1,12 @@
 import { Flex, Stack } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { axios } from "../../helper/axios";
-import { CardBlogEdited } from "../listBlog/CardEdited";
+import { CardBlog } from "./Card";
 
-export const MyArticleList = ({ w }) => {
-  const token = localStorage.getItem("token");
+export const FavArticleList = ({ w }) => {
   const [data, setData] = useState([]);
   const getData = async () => {
-    const { data } = await axios.get("/blog/pagUser", {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    const { data } = await axios.get("/blog");
     setData(data.result);
   };
 
@@ -25,13 +20,14 @@ export const MyArticleList = ({ w }) => {
         borderRadius="2xl"
         justify="space-evenly"
         flexWrap="wrap"
-        border="1px"
         align="start"
+        border="1px"
         borderColor="gray.200"
         w="full"
       >
         {data.map((item, index) => {
-          return <CardBlogEdited key={index} data={item} />;
+          console.log(index);
+          return <CardBlog key={index} data={item} />;
         })}
       </Flex>
     </Stack>

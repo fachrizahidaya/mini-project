@@ -41,7 +41,7 @@ export const BlogForm = () => {
       data.append("file", file);
       console.log(data);
 
-      await axios.post("/blogUser/create", data, {
+      await axios.post("/blog/", data, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

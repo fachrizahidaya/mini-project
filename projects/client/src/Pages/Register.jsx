@@ -40,16 +40,20 @@ export const RegistrationForm = () => {
 
   console.log(process.env.REACT_APP_API_BASE_URL);
 
-  const onRegister = async (item) => {
+  const onRegister = async (item, { setSubmitting, resetForm }) => {
     try {
-      await axios.post("/authUser/register", item);
+      await axios.post("/auth/register", item);
       customToast({
         title: "Success",
         description:
           "register succes, please check your email to verify account",
         status: "success",
       });
+
+      resetForm();
+      
       setTimeout(() => {
+        setSubmitting(false);
         navigate("/login");
       }, 3000);
     } catch (err) {
@@ -104,12 +108,9 @@ export const RegistrationForm = () => {
                 confirmPassword: "",
               }}
               validationSchema={validationRegister}
-              onSubmit={(values, action) => {
-                onRegister(values);
-                action.resetForm();
-              }}
+              onSubmit={onRegister}
             >
-              {(props) => {
+              {({ dirty, setFieldValue, values, isSubmitting }) => {
                 return (
                   <>
                     <Form>
@@ -134,7 +135,9 @@ export const RegistrationForm = () => {
                         </Flex>
                         <Stack pt={4}>
                           <Button
-                            loadingText="Submitting"
+                            isDisabled={!dirty || isSubmitting}
+                            isLoading={isSubmitting}
+                            loadingText="Loading .. "
                             bg={"blue.400"}
                             color={"white"}
                             _hover={{

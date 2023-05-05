@@ -21,7 +21,7 @@ export const VerifyForm = () => {
 
   const onLogin = async (item) => {
     try {
-      await axios.post("/authUser/secondVer", item);
+      await axios.post("/auth/secondVer", item);
       customToast({
         title: "Success",
         description: "please check your email to verify account",

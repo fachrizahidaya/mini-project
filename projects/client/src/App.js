@@ -17,6 +17,7 @@ import { LoginForm } from './pages/Login';
 import { Profile } from './pages/Profile';
 import { RegistrationForm } from './pages/Register';
 import { ResetPass } from './pages/ResetPass';
+import { Search } from './pages/Search';
 import { Verification } from './pages/Verification';
 import { VerifyForm } from './pages/VerifyForm';
 import { setAuth } from './redux/userSlice';
@@ -29,6 +30,7 @@ const router = createBrowserRouter([
     children: [
       { path: '/', element: <BlogPage/> },
       { path: '/blog', element: <BlogDetail/> },
+      { path: '/search', element: <Search/> },
       {
         // halaman diakses harus login
         element: <RequireAuth />,
@@ -67,7 +69,7 @@ function App() {
 
   const keepLogin = async () => {
     try {
-      const res = await axios.get('/authUser/keepLogin', {
+      const res = await axios.get('/auth/keepLogin', {
         headers: {
           Authorization: `Bearer ${token}`,
         },

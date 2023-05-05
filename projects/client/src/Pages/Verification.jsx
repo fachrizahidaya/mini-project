@@ -22,7 +22,7 @@ export const Verification = () => {
   const onVerify = async () => {
     try {
       await axios.patch(
-        "/authUser/verify",
+        "/auth/verify",
         {},
         {
           headers: {
