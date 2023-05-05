@@ -62,7 +62,7 @@ module.exports = {
         );
 
         await Promise.all(
-          keywords.split(" ").map(async (item) => {
+          keywords.split("  ").map(async (item) => {
             const [KeywordId, created] = await keyword.findOrCreate({
               where: {
                 name: item,
@@ -311,7 +311,7 @@ module.exports = {
           ],
         },
       });
-      
+
       const totalPage = Math.ceil(totalRows / size1);
       res.status(200).send({
         page: totalPage,
@@ -327,11 +327,11 @@ module.exports = {
 
   pagLike: async (req, res) => {
     try {
-      const { id_cat, idUser, search, sort } = req.query;
+      const { id_cat, idUser, search, sort, page, size } = req.query;
       const cat1 = id_cat || "";
       const sort1 = sort || "DESC";
-      const page1 = parseInt(req.query.page) || 1;
-      const size1 = parseInt(req.query.size) || 8;
+      const page1 = parseInt(page) || 1;
+      const size1 = parseInt(size) || 8;
       const search1 = search || "";
       const start = (page1 - 1) * size1;
       const condition = page1 * start;
@@ -477,7 +477,6 @@ module.exports = {
       });
     } catch (err) {
       res.status(400).send(err);
-      
     }
   },
 
