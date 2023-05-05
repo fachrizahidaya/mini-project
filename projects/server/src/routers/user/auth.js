@@ -13,10 +13,10 @@ const {
   validationChangePhone,
 } = require("../../middleware/validation");
 
-router.post("/register", validationRegister, runValidation, auth.register);
+router.post("/", validationRegister, runValidation, auth.register);
 router.patch("/verify", verifyToken, auth.verification);
 router.post("/login", validationLogin, runValidation, auth.login);
-router.get("/keepLogin", auth.keepLogin);
+router.get("/", auth.keepLogin);
 router.put(
   "/forgotPass",
   validationEmail,

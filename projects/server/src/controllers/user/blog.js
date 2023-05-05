@@ -14,8 +14,7 @@ const youtubeThumbnail = require(local);
 module.exports = {
   create: async (req, res) => {
     try {
-      const { title, content, CategoryId, url, keywords } = req.body;
-      // const key1 = parseInt(id_key);
+      const { title, content, CategoryId, url, keywords, country } = req.body;
       const allowedTypes = [
         "image/jpg",
         "image/jpeg",
@@ -45,7 +44,6 @@ module.exports = {
       if (!content) throw `Content must not be empty`;
       if (!CategoryId) throw `Category must not be empty`;
 
-      // id keyword yang mau masuk 5,6
       const t = await db.sequelize.transaction();
       try {
         var result = await blog.create(
@@ -56,6 +54,7 @@ module.exports = {
             CategoryId: CategoryId,
             imageURL: `Public/${fileUploaded?.filename}`,
             videoURL: url,
+            country: country,
           },
           {
             transaction: t,
@@ -179,7 +178,7 @@ module.exports = {
           "videoURL",
           "UserId",
           "CategoryId",
-          "createdAt"
+          "createdAt",
         ],
         include: [
           { model: category, attributes: ["name"] },
@@ -210,7 +209,7 @@ module.exports = {
           "videoURL",
           "UserId",
           "CategoryId",
-          "createdAt"
+          "createdAt",
         ],
         include: [
           { model: category, attributes: ["name"] },
@@ -312,7 +311,7 @@ module.exports = {
           ],
         },
       });
-      console.log(totalRows);
+      
       const totalPage = Math.ceil(totalRows / size1);
       res.status(200).send({
         page: totalPage,
@@ -357,7 +356,6 @@ module.exports = {
         order: [["createdAt", `${sort1}`]],
         limit: size1,
         offset: start,
-        raw: true,
       });
       const totalRows = await blog.count({
         where: {
@@ -399,38 +397,58 @@ module.exports = {
       const search1 = search || "";
       const start = (page1 - 1) * size1;
 
-      const result = await like.findAll({
-        attributes: [
-          "BlogId",
-          [Sequelize.fn("count", Sequelize.col("BlogId")), "total_fav"],
-          [Sequelize.literal("Blog.title"), "title"],
-          "UserId",
-        ],
+      const likes = await like.findAll();
+      const result = await blog.findAll({
         include: [
           {
-            model: blog,
-            attributes: [],
-            where: {
-              title: { [Op.like]: `%${search1}%` },
-              CategoryId: { [Op.like]: `%${cat1}%` },
-            },
+            model: like,
+
+            attributes: ["id", "BlogId", "UserId"],
+            required: false,
             include: [
               {
-                model: category,
-                attributes: ["name"],
+                model: user,
+                attributes: ["username"],
+                required: false,
               },
             ],
           },
           {
-            model: user,
-            attributes: ["username"],
+            model: category,
+            attributes: ["name"],
+            required: false,
           },
         ],
-        group: ["BlogId"],
+        attributes: [
+          "id",
+          [Sequelize.fn("count", Sequelize.col("likes.BlogId")), "total_fav"],
+          "title",
+        ],
+        where: {
+          [Op.and]: [
+            [
+              {
+                CategoryId: {
+                  [Op.like]: "%%",
+                },
+              },
+              {
+                title: {
+                  [Op.like]: "%%",
+                },
+              },
+              {
+                isDeleted: false,
+              },
+            ],
+          ],
+        },
+        group: ["id"],
         order: [[Sequelize.literal("total_fav"), `${sort1}`]],
         limit: size1,
         offset: start,
-        raw: true,
+        subQuery: false,
+        required: false,
       });
       const totalRows = await blog.count({
         where: {
@@ -459,6 +477,7 @@ module.exports = {
       });
     } catch (err) {
       res.status(400).send(err);
+      
     }
   },
 
@@ -551,10 +570,10 @@ module.exports = {
 
   pagBlog: async (req, res) => {
     try {
-      const { id_cat, search, sort, size, id_key, page } = req.query;
+      const { id_cat, search, sort, size, page, sortBy } = req.query;
       const cat1 = id_cat || "";
-      const idKey1 = id_key;
       const sort1 = sort || "DESC";
+      const sort2 = sortBy || "createdAt";
       const page1 = parseInt(page) || 1;
       const size1 = parseInt(size) || 8;
       const search1 = search || "";
@@ -575,8 +594,7 @@ module.exports = {
             },
           ],
         },
-
-        order: [["createdAt", `${sort1}`]],
+        order: [[`${sort2}`, `${sort1}`]],
         limit: size1,
         offset: start,
         include: [
@@ -590,10 +608,17 @@ module.exports = {
           },
           {
             model: blogKeyword,
-            where: {
-              KeywordId: { [Op.like]: `%${idKey1}%` },
-            },
-            include: [{ model: keyword }],
+            include: [
+              {
+                model: keyword,
+                where: {
+                  name: {
+                    [Op.like]: `%${search1}%`,
+                  },
+                },
+                required: false,
+              },
+            ],
             required: false,
           },
         ],
@@ -630,11 +655,10 @@ module.exports = {
 
   pagBlogLogin: async (req, res) => {
     try {
-      const { id_cat, search, sort, size, id_key, page } = req.query;
+      const { id_cat, search, sort, size, page, sortBy } = req.query;
       const cat1 = id_cat;
-      const idKey1 = id_key;
-
       const sort1 = sort || "DESC";
+      const sort2 = sortBy || "createdAt";
       const page1 = parseInt(page) + 1 || 1;
       const size1 = parseInt(size) || 8;
       const search1 = search || "";
@@ -656,7 +680,7 @@ module.exports = {
           ],
         },
 
-        order: [["createdAt", `${sort1}`]],
+        order: [[`${sort2}`, `${sort1}`]],
         limit: size1,
         offset: start,
         include: [
@@ -670,10 +694,16 @@ module.exports = {
           },
           {
             model: blogKeyword,
-            where: {
-              KeywordId: { [Op.like]: `%${idKey1}%` },
-            },
-            include: [{ model: keyword }],
+            include: [
+              {
+                model: keyword,
+                where: {
+                  name: {
+                    [Op.like]: `%${search}%`,
+                  },
+                },
+              },
+            ],
           },
         ],
       });
@@ -702,96 +732,6 @@ module.exports = {
         listLimit: size1,
         result,
       });
-    } catch (err) {
-      res.status(400).send(err);
-    }
-  },
-
-  createKey: async (req, res) => {
-    try {
-      const { name } = req.body;
-      const data = await keyword.create({
-        name: name,
-      });
-      res.status(200).send(data);
-    } catch (err) {
-      res.status(400).send(err);
-    }
-  },
-
-  save: async (req, res) => {
-    try {
-      const { id_cat, search, sort, size, id_key } = req.query;
-      const cat1 = id_cat;
-      const idKey1 = id_key;
-      const sort1 = sort || "DESC";
-      const page1 = parseInt(req.query.page) + 1 || 1;
-      const size1 = parseInt(size) || 8;
-      const search1 = search || "";
-      const start = (page1 - 1) * size1;
-      const blogs = await blogKeyword.findAll({
-        include: [
-          {
-            model: blog,
-            include: [
-              {
-                model: user,
-                attributes: ["id", "username"],
-              },
-              {
-                model: category,
-                attributes: ["id", "name"],
-              },
-            ],
-            where: {
-              title: {
-                [Op.like]: "%%",
-              },
-              CategoryId: {
-                [Op.like]: "%%",
-              },
-            },
-            order: [["createdAt", "DESC"]],
-          },
-          {
-            model: keyword,
-            attributes: ["id", "name"],
-            where: {
-              id: {
-                [Op.like]: "%%",
-              },
-            },
-          },
-        ],
-        attributes: ["id"],
-        limit: 8,
-      });
-
-      const blogsIds = blogs.map((blog) => blog.BlogId);
-
-      const result = await blog.findAll({
-        where: {
-          id: {
-            [Op.in]: blogsIds,
-          },
-        },
-        include: [
-          {
-            model: user,
-            attributes: ["id", "username"],
-          },
-          {
-            model: category,
-            attributes: ["id", "name"],
-          },
-          {
-            model: keyword,
-            attributes: ["id", "name"],
-          },
-        ],
-        order: [["createdAt", "DESC"]],
-      });
-      res.status(200).send("success");
     } catch (err) {
       res.status(400).send(err);
     }

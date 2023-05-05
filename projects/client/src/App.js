@@ -69,7 +69,7 @@ function App() {
 
   const keepLogin = async () => {
     try {
-      const res = await axios.get('/auth/keepLogin', {
+      const res = await axios.get('/auth', {
         headers: {
           Authorization: `Bearer ${token}`,
         },
