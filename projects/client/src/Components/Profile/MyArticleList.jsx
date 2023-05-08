@@ -1,7 +1,7 @@
 import { Flex, Stack } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { axios } from "../../helper/axios";
-import { CardBlogEdited } from "../listBlog/CardEdited";
+import { CardBlogEdited } from "../ListBlog/CardEdited";
 
 export const MyArticleList = ({ w }) => {
   const token = localStorage.getItem("token");
