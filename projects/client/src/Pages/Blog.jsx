@@ -1,4 +1,4 @@
-import { HeroHome } from "../Components/home/Hero";
+import { HeroHome } from "../Components/Home/Hero";
 import { Stack } from "@chakra-ui/react";
 
 export const BlogPage = () => {
