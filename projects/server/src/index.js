@@ -2,24 +2,41 @@ require("dotenv/config");
 const express = require("express");
 const cors = require("cors");
 const { join } = require("path");
+const db = require("./models");
+const bearerToken = require("express-bearer-token");
+const path = require("path");
+const imgMiddleware = require("./middleware/multer");
+const bodyParser = require("body-parser");
 
 const PORT = process.env.PORT || 8000;
 const app = express();
 app.use(
   cors({
-    origin: [
-      process.env.WHITELISTED_DOMAIN &&
-        process.env.WHITELISTED_DOMAIN.split(","),
-    ],
+    // origin: [
+    //   process.env.WHITELISTED_DOMAIN &&
+    //     process.env.WHITELISTED_DOMAIN.split(","),
+    // ],
   })
 );
 
 app.use(express.json());
+app.use("/Public", express.static(path.join(__dirname, "/Public")));
+app.use(bearerToken());
+app.use(bodyParser.json());
 
 //#region API ROUTES
 
+const { auth, profile, blog } = require("./routers");
+
 // ===========================
 // NOTE : Add your routes here
+
+// user
+app.use("/api/auth", auth);
+app.use("/api/profile", profile);
+app.use("/api/blog", blog);
+
+// admin
 
 app.get("/api", (req, res) => {
   res.send(`Hello, this is my API`);
@@ -69,6 +86,7 @@ app.listen(PORT, (err) => {
   if (err) {
     console.log(`ERROR: ${err}`);
   } else {
+    // db.sequelize.sync({ alter: true });
     console.log(`APP RUNNING at ${PORT} ✅`);
   }
 });
