@@ -33,7 +33,7 @@ export const UpdateProfilePic = () => {
       const data = new FormData();
       data.append("userId", 1);
       data.append("file", image);
-      await axios.post("/profile/single-uploaded", data, {
+      await axios.post("/Profile/single-uploaded", data, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
