@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import AfterAuth from './Components/AfterAuth';
-import { ArticleList } from './Components/listBlog/ArticleList';
+import { ArticleList } from './Components/ListBlog/ArticleList';
 import { ChangePass } from './Components/profile/ChangePass';
 import { MyArticleList } from './Components/profile/MyArticleList';
 import { UpdateProfile } from './Components/profile/UpdateProfile';
