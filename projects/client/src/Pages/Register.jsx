@@ -11,9 +11,9 @@ import { useNavigate, Link as RouterLink } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
-import { PassField, TextField } from "../components/TextField";
+import { PassField, TextField } from "../Components/TextField";
 import { axios } from "../helper/axios";
-import { useCustomToast } from "../components/Toast";
+import { useCustomToast } from "../Components/Toast";
 
 export const RegistrationForm = () => {
   const navigate = useNavigate();

@@ -1,6 +1,6 @@
 import { Box, Flex } from "@chakra-ui/react";
 import { useState } from "react";
-import { ProfileCard } from "../components/profile/Card";
+import { ProfileCard } from "../Components/profile/Card";
 import { Outlet } from "react-router-dom";
 
 export const Profile = () => {

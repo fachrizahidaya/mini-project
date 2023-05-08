@@ -1,6 +1,6 @@
 import { Box, Flex } from "@chakra-ui/react";
-import { SearchForm } from "../components/listBlog/Search";
-import { ArticleList } from "../components/listBlog/ArticleList";
+import { SearchForm } from "../Components/listBlog/Search";
+import { ArticleList } from "../Components/listBlog/ArticleList";
 
 export const Search = () => {
   return (

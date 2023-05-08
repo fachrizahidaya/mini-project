@@ -1,5 +1,5 @@
 import { Box, Flex, Stack } from "@chakra-ui/react";
-import { BlogForm } from "../components/blog/BlogForm";
+import { BlogForm } from "../Components/blog/BlogForm";
 
 export const CreateBlog = () => {
   return (

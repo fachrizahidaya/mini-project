@@ -11,9 +11,9 @@ import { motion } from "framer-motion";
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
 import { useNavigate, Link as RouterLink } from "react-router-dom";
-import { TextField } from "../components/TextField";
+import { TextField } from "../Components/TextField";
 import { axios } from "../helper/axios";
-import { useCustomToast } from "../components/Toast";
+import { useCustomToast } from "../Components/Toast";
 
 export const VerifyForm = () => {
   const customToast = useCustomToast();
