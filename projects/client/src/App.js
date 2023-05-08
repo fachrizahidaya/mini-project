@@ -1,12 +1,12 @@
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
-import AfterAuth from './components/AfterAuth';
-import { ArticleList } from './components/listBlog/ArticleList';
-import { ChangePass } from './components/profile/ChangePass';
-import { MyArticleList } from './components/profile/MyArticleList';
-import { UpdateProfile } from './components/profile/UpdateProfile';
-import RequireAuth from './components/RequireAuth';
+import AfterAuth from './Components/AfterAuth';
+import { ArticleList } from './Components/listBlog/ArticleList';
+import { ChangePass } from './Components/profile/ChangePass';
+import { MyArticleList } from './Components/profile/MyArticleList';
+import { UpdateProfile } from './Components/profile/UpdateProfile';
+import RequireAuth from './Components/RequireAuth';
 import { axios } from './helper/axios';
 import { BlogPage } from './pages/Blog';
 import { BlogDetail } from './pages/BlogDetail';
