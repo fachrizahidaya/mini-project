@@ -32,7 +32,7 @@ module.exports = {
       };
 
       const token = jwt.sign(payload, secretKey, { expiresIn: "1h" });
-      const tempEmail = fs.readFileSync("./src/template/user.html", "utf-8");
+      const tempEmail = fs.readFileSync(path.join(__dirname, "../../template/user.html"), "utf-8");
       const tempCompile = handlebars.compile(tempEmail);
       const tempResult = tempCompile({
         link: `http://localhost:3000/verification/${token}`,
@@ -148,7 +148,7 @@ module.exports = {
         secretKey,
         { expiresIn: "1h" }
       );
-      const tempEmail = fs.readFileSync("./src/template/reset.html", "utf-8");
+      const tempEmail = fs.readFileSync(path.join(__dirname, "../../template/reset.html"), "utf-8");
       const tempCompile = handlebars.compile(tempEmail);
       const tempResult = tempCompile({
         email: isAccountExist.email,
@@ -249,7 +249,7 @@ module.exports = {
 
       const token = jwt.sign(payload, secretKey, { expiresIn: "1h" });
       const tempEmail = fs.readFileSync(
-        "./src/template/re-verify.html",
+        path.join(__dirname, "../../template/re-verify.html"),
         "utf-8"
       );
       const tempCompile = handlebars.compile(tempEmail);
@@ -302,7 +302,7 @@ module.exports = {
         expiresIn: "1h",
       });
       const tempEmail = fs.readFileSync(
-        "./src/template/re-verify.html",
+        path.join(__dirname, "../../template/re-verify.html"),
         "utf-8"
       );
       const tempCompile = handlebars.compile(tempEmail);
@@ -356,7 +356,7 @@ module.exports = {
         expiresIn: "1h",
       });
       const tempEmail = fs.readFileSync(
-        "./src/template/re-verify.html",
+        path.join(__dirname, "../../template/re-verify.html"),
         "utf-8"
       );
       const tempCompile = handlebars.compile(tempEmail);
@@ -410,7 +410,7 @@ module.exports = {
         expiresIn: "1h",
       });
       const tempEmail = fs.readFileSync(
-        "./src/template/re-verify.html",
+        path.join(__dirname, "../../template/re-verify.html"),
         "utf-8"
       );
       const tempCompile = handlebars.compile(tempEmail);
