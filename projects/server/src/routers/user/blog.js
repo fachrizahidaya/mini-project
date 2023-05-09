@@ -16,7 +16,7 @@ router.patch("/remove/:id", blog.remove);
 router.patch("/update/:id", blog.update);
 router.get("/byUser", verifyToken, blog.findUserLike);
 router.get("/pagUser", verifyToken, blog.pagUser);
-router.get("/pagLike", blog.pagLike);
+router.get("/pagLike", verifyToken, blog.pagLike);
 router.get("/pagFav", blog.pagFavorite);
 router.get("/allCategory", blog.allCategory);
 router.get("/vidThumb/:id", blog.videoThumb);
