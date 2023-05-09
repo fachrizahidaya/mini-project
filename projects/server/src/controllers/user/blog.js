@@ -423,7 +423,7 @@ module.exports = {
         ],
         attributes: [
           "id",
-          [Sequelize.fn("count", Sequelize.col("likes.BlogId")), "total_fav"],
+          [Sequelize.fn("count", Sequelize.col("Likes.BlogId")), "total_fav"],
           "title",
         ],
         where: {
