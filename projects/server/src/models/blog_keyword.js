@@ -16,7 +16,8 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   Blog_Keyword.init({
-    desc: DataTypes.STRING
+    BlogId: DataTypes.INTEGER,
+    KeywordId: DataTypes.INTEGER,
   }, {
     sequelize,
     modelName: 'Blog_Keyword',
