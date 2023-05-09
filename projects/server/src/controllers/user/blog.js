@@ -311,7 +311,7 @@ module.exports = {
           ],
         },
       });
-      
+
       const totalPage = Math.ceil(totalRows / size1);
       res.status(200).send({
         page: totalPage,
@@ -337,12 +337,14 @@ module.exports = {
       const condition = page1 * start;
       const result = await like.findAll({
         // attributes: ["id"],
+        where: {
+          UserId: req.user.id
+        },
         include: [
           {
             model: blog,
             attributes: ["title", "content"],
             where: {
-              UserId: idUser,
               title: { [Op.like]: `%${search1}%` },
               CategoryId: { [Op.like]: `%${cat1}%` },
             },
@@ -477,7 +479,7 @@ module.exports = {
       });
     } catch (err) {
       res.status(400).send(err);
-      
+
     }
   },
 
