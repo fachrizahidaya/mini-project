@@ -14,7 +14,7 @@ const youtubeThumbnail = require(local);
 module.exports = {
   create: async (req, res) => {
     try {
-      const { title, content, CategoryId, url, keywords, country } = req.body;
+      const { title, content, CategoryId, url, keywords, country } = JSON.parse(req.body.data);
       const allowedTypes = [
         "image/jpg",
         "image/jpeg",
