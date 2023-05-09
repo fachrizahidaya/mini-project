@@ -336,7 +336,7 @@ module.exports = {
       const start = (page1 - 1) * size1;
       const condition = page1 * start;
       const result = await like.findAll({
-        attributes: ["id"],
+        // attributes: ["id"],
         include: [
           {
             model: blog,
