@@ -14,7 +14,9 @@ const youtubeThumbnail = require(local);
 module.exports = {
   create: async (req, res) => {
     try {
-      const { title, content, CategoryId, url, keywords, country } = JSON.parse(req.body.data);
+      const { title, content, CategoryId, url, keywords, country } = JSON.parse(
+        req.body.data
+      );
       const allowedTypes = [
         "image/jpg",
         "image/jpeg",
@@ -275,6 +277,9 @@ module.exports = {
             {
               title: { [Op.like]: `%${search1}%` },
             },
+            {
+              isDeleted: false,
+            },
           ],
         },
         include: [
@@ -338,7 +343,7 @@ module.exports = {
       const result = await like.findAll({
         // attributes: ["id"],
         where: {
-          UserId: req.user.id
+          UserId: req.user.id,
         },
         include: [
           {
@@ -479,7 +484,6 @@ module.exports = {
       });
     } catch (err) {
       res.status(400).send(err);
-
     }
   },
 
@@ -522,7 +526,7 @@ module.exports = {
     try {
       const data = await like.destroy({
         where: {
-          UserId: req.params.id,
+          UserId: req.user.id,
           BlogId: req.params.idBlog,
         },
       });
