@@ -526,7 +526,7 @@ module.exports = {
     try {
       const data = await like.destroy({
         where: {
-          UserId: req.params.id,
+          UserId: req.user.id,
           BlogId: req.params.idBlog,
         },
       });
