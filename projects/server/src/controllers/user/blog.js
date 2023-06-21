@@ -92,7 +92,7 @@ module.exports = {
         data: result,
       });
     } catch (err) {
-      res.status(500).send({success : false, err});
+      res.status(500).send({ success: false, err });
     }
   },
 
@@ -135,7 +135,7 @@ module.exports = {
         image: getImg.imageURL,
       });
     } catch (err) {
-      res.status(500).send({success : false, err});
+      res.status(500).send({ success: false, err });
     }
   },
 
@@ -165,7 +165,7 @@ module.exports = {
 
       res.status(200).send("Like added");
     } catch (err) {
-      res.status(500).send({success : false, err});
+      res.status(500).send({ success: false, err });
     }
   },
 
@@ -196,7 +196,7 @@ module.exports = {
       });
       res.status(200).send(data);
     } catch (err) {
-      res.status(500).send({success : false, err});
+      res.status(500).send({ success: false, err });
     }
   },
 
@@ -234,7 +234,7 @@ module.exports = {
       });
       res.status(200).send(data);
     } catch (err) {
-      res.status(500).send({success : false, err});
+      res.status(500).send({ success: false, err });
     }
   },
 
@@ -249,7 +249,7 @@ module.exports = {
       });
       res.status(200).send(data);
     } catch (err) {
-      res.status(500).send({success : false, err});
+      res.status(500).send({ success: false, err });
     }
   },
 
@@ -326,7 +326,7 @@ module.exports = {
         result,
       });
     } catch (err) {
-      res.status(500).send({success : false, err});
+      res.status(500).send({ success: false, err });
     }
   },
 
@@ -390,7 +390,7 @@ module.exports = {
         result,
       });
     } catch (err) {
-      res.status(500).send({success : false, err});
+      res.status(500).send({ success: false, err });
     }
   },
 
@@ -408,10 +408,34 @@ module.exports = {
       const result = await blog.findAll({
         include: [
           {
-            model: like,
-
-            attributes: ["id", "BlogId", "UserId"],
+            model: user,
+            attributes: ["username", "imgProfile"],
+          },
+          {
+            model: category,
+            attributes: ["id", "name"],
+          },
+          {
+            model: blogKeyword,
+            include: [
+              {
+                model: keyword,
+                where: {
+                  name: {
+                    [Op.like]: `%${search1}%`,
+                  },
+                },
+                required: false,
+              },
+            ],
             required: false,
+          },
+          {
+            model: like,
+            attributes: ["id", "BlogId", "UserId"],
+            where: {
+              UserId: req.query.UserId || { [Op.not]: null },
+            },
             include: [
               {
                 model: user,
@@ -420,17 +444,12 @@ module.exports = {
               },
             ],
           },
-          {
-            model: category,
-            attributes: ["name"],
-            required: false,
-          },
         ],
-        attributes: [
-          "id",
-          [Sequelize.fn("count", Sequelize.col("Likes.BlogId")), "total_fav"],
-          "title",
-        ],
+        attributes: {
+          include: [
+            [Sequelize.fn("count", Sequelize.col("Likes.BlogId")), "total_fav"],
+          ],
+        },
         where: {
           [Op.and]: [
             [
@@ -451,28 +470,26 @@ module.exports = {
           ],
         },
         group: ["id"],
-        order: [[Sequelize.literal("total_fav"), `${sort1}`]],
+        order: [[Sequelize.literal("id"), `${sort1}`]],
         limit: size1,
         offset: start,
         subQuery: false,
         required: false,
       });
-      const totalRows = await blog.count({
+      const totalRows = await like.count({
+        attributes: ["id", "BlogId", "UserId"],
         where: {
-          [Op.and]: [
-            {
-              CategoryId: {
-                [Op.like]: `%${cat1}%`,
-              },
-            },
-            {
-              title: { [Op.like]: `%${search1}%` },
-            },
-            {
+          UserId: req.query.UserId || { [Op.not]: null },
+        },
+        include: [
+          {
+            model: blog,
+            where: {
               isDeleted: false,
             },
-          ],
-        },
+          },
+        ],
+        // required: false,
       });
       const totalPage = Math.ceil(totalRows / size1);
       res.status(200).send({
@@ -483,7 +500,7 @@ module.exports = {
         result,
       });
     } catch (err) {
-      res.status(500).send({success : false, err});
+      res.status(500).send({ success: false, err });
     }
   },
 
@@ -500,7 +517,7 @@ module.exports = {
       let thumbVid = thumbnail.default.url;
       res.status(200).send({ response, data: thumbVid });
     } catch (err) {
-      res.status(500).send({success : false, err});
+      res.status(500).send({ success: false, err });
     }
   },
 
@@ -518,7 +535,7 @@ module.exports = {
       );
       res.status(200).send("Successfully deleted");
     } catch (err) {
-      res.status(500).send({success : false, err});
+      res.status(500).send({ success: false, err });
     }
   },
 
@@ -532,7 +549,7 @@ module.exports = {
       });
       res.status(200).send("Successfully deleted");
     } catch (err) {
-      res.status(500).send({success : false, err});
+      res.status(500).send({ success: false, err });
     }
   },
 
@@ -559,7 +576,7 @@ module.exports = {
       });
       res.status(200).send(edit);
     } catch (err) {
-      res.status(500).send({success : false, err});
+      res.status(500).send({ success: false, err });
     }
   },
 
@@ -570,7 +587,7 @@ module.exports = {
       });
       res.status(200).send(data);
     } catch (err) {
-      res.status(500).send({success : false, err});
+      res.status(500).send({ success: false, err });
     }
   },
 
@@ -655,7 +672,7 @@ module.exports = {
         result,
       });
     } catch (err) {
-      res.status(500).send({success : false, err});
+      res.status(500).send({ success: false, err });
     }
   },
 
@@ -739,7 +756,7 @@ module.exports = {
         result,
       });
     } catch (err) {
-      res.status(500).send({success : false, err});
+      res.status(500).send({ success: false, err });
     }
   },
 
@@ -751,7 +768,7 @@ module.exports = {
       });
       res.status(200).send(result);
     } catch (err) {
-      res.status(500).send({success : false, err});
+      res.status(500).send({ success: false, err });
     }
   },
 
@@ -762,7 +779,7 @@ module.exports = {
       });
       res.status(200).send(data);
     } catch (err) {
-      res.status(500).send({success : false, err});
+      res.status(500).send({ success: false, err });
     }
   },
 };
