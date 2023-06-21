@@ -32,7 +32,10 @@ module.exports = {
       };
 
       const token = jwt.sign(payload, secretKey, { expiresIn: "1h" });
-      const tempEmail = fs.readFileSync(path.join(__dirname, "../../template/user.html"), "utf-8");
+      const tempEmail = fs.readFileSync(
+        path.join(__dirname, "../../template/user.html"),
+        "utf-8"
+      );
       const tempCompile = handlebars.compile(tempEmail);
       const tempResult = tempCompile({
         link: `http://localhost:3000/verification/${token}`,
@@ -50,7 +53,7 @@ module.exports = {
         token,
       });
     } catch (err) {
-      res.status(400).send(err);
+      res.status(500).send({ success: false, err });
     }
   },
 
@@ -76,7 +79,7 @@ module.exports = {
         message: "Verification success",
       });
     } catch (err) {
-      res.status(400).send(err);
+      res.status(500).send({ success: false, err });
     }
   },
 
@@ -108,7 +111,7 @@ module.exports = {
         .status(200)
         .send({ message: "Welcome to Blog", isAccountExist, token });
     } catch (err) {
-      res.status(400).send(err);
+      res.status(500).send({ success: false, err });
     }
   },
 
@@ -123,7 +126,7 @@ module.exports = {
       });
       res.status(200).send(result);
     } catch (err) {
-      res.status(400).send(err);
+      res.status(500).send({ success: false, err });
     }
   },
 
@@ -141,14 +144,11 @@ module.exports = {
         id: isAccountExist.id,
         isVerified: isAccountExist.isVerified,
       };
-      const token = jwt.sign(
-        {
-          payload,
-        },
-        secretKey,
-        { expiresIn: "1h" }
+      const token = jwt.sign(payload, secretKey, { expiresIn: "1h" });
+      const tempEmail = fs.readFileSync(
+        path.join(__dirname, "../../template/reset.html"),
+        "utf-8"
       );
-      const tempEmail = fs.readFileSync(path.join(__dirname, "../../template/reset.html"), "utf-8");
       const tempCompile = handlebars.compile(tempEmail);
       const tempResult = tempCompile({
         email: isAccountExist.email,
@@ -165,7 +165,8 @@ module.exports = {
         data: token,
       });
     } catch (err) {
-      res.status(400).send(err);
+      console.log(err);
+      res.status(500).send({ success: false, err });
     }
   },
 
@@ -194,7 +195,8 @@ module.exports = {
         data: isAccountExist,
       });
     } catch (err) {
-      res.status(400).send(err);
+      console.log(err);
+      res.status(500).send({ success: false, err });
     }
   },
 
@@ -228,7 +230,7 @@ module.exports = {
         data: isAccountExist,
       });
     } catch (err) {
-      res.status(400).send(err);
+      res.status(500).send({ success: false, err });
     }
   },
 
@@ -267,7 +269,7 @@ module.exports = {
         token,
       });
     } catch (err) {
-      res.status(400).send(err);
+      res.status(500).send({ success: false, err });
     }
   },
 
@@ -321,7 +323,7 @@ module.exports = {
         token,
       });
     } catch (err) {
-      res.status(400).send(err);
+      res.status(500).send({ success: false, err });
     }
   },
 
@@ -375,7 +377,7 @@ module.exports = {
         token,
       });
     } catch (err) {
-      res.status(400).send(err);
+      res.status(500).send({ success: false, err });
     }
   },
 
@@ -428,7 +430,7 @@ module.exports = {
         data,
       });
     } catch (err) {
-      res.status(400).send(err);
+      res.status(500).send({ success: false, err });
     }
   },
 
