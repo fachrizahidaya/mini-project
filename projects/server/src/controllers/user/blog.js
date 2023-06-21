@@ -92,7 +92,7 @@ module.exports = {
         data: result,
       });
     } catch (err) {
-      res.status(400).send(err);
+      res.status(500).send({success : false, err});
     }
   },
 
@@ -135,7 +135,7 @@ module.exports = {
         image: getImg.imageURL,
       });
     } catch (err) {
-      res.status(400).send(err);
+      res.status(500).send({success : false, err});
     }
   },
 
@@ -165,7 +165,7 @@ module.exports = {
 
       res.status(200).send("Like added");
     } catch (err) {
-      res.status(400).send(err);
+      res.status(500).send({success : false, err});
     }
   },
 
@@ -196,7 +196,7 @@ module.exports = {
       });
       res.status(200).send(data);
     } catch (err) {
-      res.status(400).send(err);
+      res.status(500).send({success : false, err});
     }
   },
 
@@ -234,7 +234,7 @@ module.exports = {
       });
       res.status(200).send(data);
     } catch (err) {
-      res.status(400).send(err);
+      res.status(500).send({success : false, err});
     }
   },
 
@@ -249,7 +249,7 @@ module.exports = {
       });
       res.status(200).send(data);
     } catch (err) {
-      res.status(400).send(err);
+      res.status(500).send({success : false, err});
     }
   },
 
@@ -326,7 +326,7 @@ module.exports = {
         result,
       });
     } catch (err) {
-      res.status(400).send(err);
+      res.status(500).send({success : false, err});
     }
   },
 
@@ -390,7 +390,7 @@ module.exports = {
         result,
       });
     } catch (err) {
-      res.status(400).send(err);
+      res.status(500).send({success : false, err});
     }
   },
 
@@ -483,7 +483,7 @@ module.exports = {
         result,
       });
     } catch (err) {
-      res.status(400).send(err);
+      res.status(500).send({success : false, err});
     }
   },
 
@@ -500,7 +500,7 @@ module.exports = {
       let thumbVid = thumbnail.default.url;
       res.status(200).send({ response, data: thumbVid });
     } catch (err) {
-      res.status(400).send(err);
+      res.status(500).send({success : false, err});
     }
   },
 
@@ -518,7 +518,7 @@ module.exports = {
       );
       res.status(200).send("Successfully deleted");
     } catch (err) {
-      res.status(400).send(err);
+      res.status(500).send({success : false, err});
     }
   },
 
@@ -532,7 +532,7 @@ module.exports = {
       });
       res.status(200).send("Successfully deleted");
     } catch (err) {
-      res.status(400).send(err);
+      res.status(500).send({success : false, err});
     }
   },
 
@@ -559,7 +559,7 @@ module.exports = {
       });
       res.status(200).send(edit);
     } catch (err) {
-      res.status(400).send(err);
+      res.status(500).send({success : false, err});
     }
   },
 
@@ -570,7 +570,7 @@ module.exports = {
       });
       res.status(200).send(data);
     } catch (err) {
-      res.status(400).send(err);
+      res.status(500).send({success : false, err});
     }
   },
 
@@ -655,7 +655,7 @@ module.exports = {
         result,
       });
     } catch (err) {
-      res.status(400).send(err);
+      res.status(500).send({success : false, err});
     }
   },
 
@@ -739,7 +739,7 @@ module.exports = {
         result,
       });
     } catch (err) {
-      res.status(400).send(err);
+      res.status(500).send({success : false, err});
     }
   },
 
@@ -751,7 +751,7 @@ module.exports = {
       });
       res.status(200).send(result);
     } catch (err) {
-      res.status(400).send(err);
+      res.status(500).send({success : false, err});
     }
   },
 
@@ -762,7 +762,7 @@ module.exports = {
       });
       res.status(200).send(data);
     } catch (err) {
-      res.status(400).send(err);
+      res.status(500).send({success : false, err});
     }
   },
 };
