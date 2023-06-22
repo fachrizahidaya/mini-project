@@ -13,7 +13,7 @@ const path = require("path");
 module.exports = {
   register: async (req, res) => {
     try {
-      const { username, email, phone, password, confirmPassword } = req.body;
+      const { username, email, phone, password, confirmPassword, FE_URL } = req.body;
       const salt = await bcrypt.genSalt();
       const hashPassword = await bcrypt.hash(password, salt);
       const data = await user.create({
@@ -38,7 +38,7 @@ module.exports = {
       );
       const tempCompile = handlebars.compile(tempEmail);
       const tempResult = tempCompile({
-        link: `http://localhost:3000/verification/${token}`,
+        link: `${FE_URL}/verification/${token}`,
       });
       await transporter.sendMail({
         from: "Purwadhika Team",
