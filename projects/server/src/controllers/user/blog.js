@@ -396,8 +396,9 @@ module.exports = {
 
   pagFavorite: async (req, res) => {
     try {
-      const { id_cat, search, sort, size, id_key, page } = req.query;
+      const { id_cat, search, sort, size, id_key, page, orderBy } = req.query;
       const cat1 = id_cat || "";
+      const orderBy1 = orderBy || "id";
       const sort1 = sort || "DESC";
       const page1 = parseInt(page) || 1;
       const size1 = parseInt(size) || 8;
@@ -432,10 +433,7 @@ module.exports = {
           },
           {
             model: like,
-            attributes: ["id", "BlogId", "UserId"],
-            where: {
-              UserId: req.query.UserId || { [Op.not]: null },
-            },
+            attributes: ["id", "BlogId"],
             include: [
               {
                 model: user,
@@ -449,6 +447,7 @@ module.exports = {
           include: [
             [Sequelize.fn("count", Sequelize.col("Likes.BlogId")), "total_fav"],
           ],
+          exclude:["UserId"]
         },
         where: {
           [Op.and]: [
@@ -470,14 +469,14 @@ module.exports = {
           ],
         },
         group: ["id"],
-        order: [[Sequelize.literal("id"), `${sort1}`]],
+        order: [[Sequelize.literal(orderBy1), `${sort1}`]],
         limit: size1,
         offset: start,
         subQuery: false,
         required: false,
       });
       const totalRows = await like.count({
-        attributes: ["id", "BlogId", "UserId"],
+        attributes: ["id", "BlogId"],
         where: {
           UserId: req.query.UserId || { [Op.not]: null },
         },
