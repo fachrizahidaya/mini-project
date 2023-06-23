@@ -13,7 +13,8 @@ const path = require("path");
 module.exports = {
   register: async (req, res) => {
     try {
-      const { username, email, phone, password, confirmPassword, FE_URL } = req.body;
+      const { username, email, phone, password, confirmPassword, FE_URL } =
+        req.body;
       const salt = await bcrypt.genSalt();
       const hashPassword = await bcrypt.hash(password, salt);
       const data = await user.create({
@@ -132,7 +133,7 @@ module.exports = {
 
   forgotPassword: async (req, res) => {
     try {
-      const { email } = req.body;
+      const { email, FE_URL } = req.body;
       const isAccountExist = await user.findOne({
         attributes: ["email"],
         where: {
@@ -152,7 +153,7 @@ module.exports = {
       const tempCompile = handlebars.compile(tempEmail);
       const tempResult = tempCompile({
         email: isAccountExist.email,
-        link1: `http://localhost:3000/reset-password/${token}`,
+        link1: `${FE_URL}/reset-password/${token}`,
       });
       await transporter.sendMail({
         from: "Admin",
@@ -236,7 +237,7 @@ module.exports = {
 
   secondVerification: async (req, res) => {
     try {
-      const { email } = req.body;
+      const { email, FE_URL } = req.body;
       const response = await user.findOne({
         where: {
           email: email,
@@ -256,7 +257,7 @@ module.exports = {
       );
       const tempCompile = handlebars.compile(tempEmail);
       const tempResult = tempCompile({
-        link: `http://localhost:3000/verification/${token}`,
+        link: `${FE_URL}/verification/${token}`,
       });
       await transporter.sendMail({
         from: "Purwadhika Team",
@@ -275,7 +276,7 @@ module.exports = {
 
   changeEmail: async (req, res) => {
     try {
-      const { currentEmail, newEmail } = req.body;
+      const { currentEmail, newEmail, FE_URL } = req.body;
       const isAccountExist = await user.findOne({
         where: {
           id: req.user.id,
@@ -309,7 +310,7 @@ module.exports = {
       );
       const tempCompile = handlebars.compile(tempEmail);
       const tempResult = tempCompile({
-        link: `http://localhost:3000/verification-change-email/${token}`,
+        link: `${FE_URL}/verification-change-email/${token}`,
       });
       await transporter.sendMail({
         from: "Purwadhika Team",
@@ -329,7 +330,7 @@ module.exports = {
 
   changeUsername: async (req, res) => {
     try {
-      const { currentUsername, newUsername } = req.body;
+      const { currentUsername, newUsername, FE_URL } = req.body;
       const isAccountExist = await user.findOne({
         where: {
           id: req.user.id,
@@ -363,7 +364,7 @@ module.exports = {
       );
       const tempCompile = handlebars.compile(tempEmail);
       const tempResult = tempCompile({
-        link: `http://localhost:3000/verification-change-email/${token}`,
+        link: `${FE_URL}/verification-change-email/${token}`,
       });
       await transporter.sendMail({
         from: "Purwadhika Team",
@@ -383,7 +384,7 @@ module.exports = {
 
   changePhone: async (req, res) => {
     try {
-      const { currentPhone, newPhone } = req.body;
+      const { currentPhone, newPhone, FE_URL } = req.body;
       const isAccountExist = await user.findOne({
         where: {
           id: req.user.id,
@@ -417,7 +418,7 @@ module.exports = {
       );
       const tempCompile = handlebars.compile(tempEmail);
       const tempResult = tempCompile({
-        link: `http://localhost:3000/verification-change-email/${token}`,
+        link: `${FE_URL}/verification-change-email/${token}`,
       });
       await transporter.sendMail({
         from: "Purwadhika Team",
