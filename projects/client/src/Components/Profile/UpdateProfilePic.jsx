@@ -48,7 +48,7 @@ export const UpdateProfilePic = () => {
     <Formik
       initialValues={{
         file: `${
-          `http://localhost:8000/${imgProfile}` || "https://bit.ly/broken-link"
+          `${process.env.REACT_APP_API_PUBLIC_URL}/${imgProfile}` || "https://bit.ly/broken-link"
         }`,
       }}
       validationSchema={validationSchema}

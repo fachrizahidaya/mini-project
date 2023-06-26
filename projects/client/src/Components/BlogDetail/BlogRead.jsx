@@ -40,7 +40,7 @@ export const BlogRead = () => {
             <Flex align="center" gap="4">
               <Avatar
                 size="sm"
-                src={`http://localhost:8000/${item.User.imgProfile}`}
+                src={`${process.env.REACT_APP_API_PUBLIC_URL}/${item.User.imgProfile}`}
               />
               <Text fontSize="small" color="grey">
                 {`${item.User.username} . ${item.Category.name} . ${convertDate(
@@ -51,7 +51,7 @@ export const BlogRead = () => {
             <Flex justifyContent="center" px={{ xl: "10", base: "4" }}>
               <Image
                 borderRadius="2xl"
-                src={`http://localhost:8000/${item.imageURL}`}
+                src={`${process.env.REACT_APP_API_PUBLIC_URL}/${item.imageURL}`}
               />
             </Flex>
             <Box

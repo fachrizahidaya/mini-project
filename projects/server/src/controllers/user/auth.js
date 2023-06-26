@@ -13,7 +13,8 @@ const path = require("path");
 module.exports = {
   register: async (req, res) => {
     try {
-      const { username, email, phone, password, confirmPassword } = req.body;
+      const { username, email, phone, password, confirmPassword, FE_URL } =
+        req.body;
       const salt = await bcrypt.genSalt();
       const hashPassword = await bcrypt.hash(password, salt);
       const data = await user.create({
@@ -32,10 +33,13 @@ module.exports = {
       };
 
       const token = jwt.sign(payload, secretKey, { expiresIn: "1h" });
-      const tempEmail = fs.readFileSync(path.join(__dirname, "../../template/user.html"), "utf-8");
+      const tempEmail = fs.readFileSync(
+        path.join(__dirname, "../../template/user.html"),
+        "utf-8"
+      );
       const tempCompile = handlebars.compile(tempEmail);
       const tempResult = tempCompile({
-        link: `http://localhost:3000/verification/${token}`,
+        link: `${FE_URL || "http://localhost:3000"}/verification/${token}`,
       });
       await transporter.sendMail({
         from: "Purwadhika Team",
@@ -50,7 +54,7 @@ module.exports = {
         token,
       });
     } catch (err) {
-      res.status(400).send(err);
+      res.status(500).send({ success: false, err });
     }
   },
 
@@ -76,7 +80,7 @@ module.exports = {
         message: "Verification success",
       });
     } catch (err) {
-      res.status(400).send(err);
+      res.status(500).send({ success: false, err });
     }
   },
 
@@ -108,7 +112,7 @@ module.exports = {
         .status(200)
         .send({ message: "Welcome to Blog", isAccountExist, token });
     } catch (err) {
-      res.status(400).send(err);
+      res.status(500).send({ success: false, err });
     }
   },
 
@@ -123,13 +127,13 @@ module.exports = {
       });
       res.status(200).send(result);
     } catch (err) {
-      res.status(400).send(err);
+      res.status(500).send({ success: false, err });
     }
   },
 
   forgotPassword: async (req, res) => {
     try {
-      const { email } = req.body;
+      const { email, FE_URL } = req.body;
       const isAccountExist = await user.findOne({
         attributes: ["email"],
         where: {
@@ -141,18 +145,15 @@ module.exports = {
         id: isAccountExist.id,
         isVerified: isAccountExist.isVerified,
       };
-      const token = jwt.sign(
-        {
-          payload,
-        },
-        secretKey,
-        { expiresIn: "1h" }
+      const token = jwt.sign(payload, secretKey, { expiresIn: "1h" });
+      const tempEmail = fs.readFileSync(
+        path.join(__dirname, "../../template/reset.html"),
+        "utf-8"
       );
-      const tempEmail = fs.readFileSync(path.join(__dirname, "../../template/reset.html"), "utf-8");
       const tempCompile = handlebars.compile(tempEmail);
       const tempResult = tempCompile({
         email: isAccountExist.email,
-        link1: `http://localhost:3000/reset-password/${token}`,
+        link1: `${FE_URL || "http://localhost:3000"}/reset-password/${token}`,
       });
       await transporter.sendMail({
         from: "Admin",
@@ -165,7 +166,8 @@ module.exports = {
         data: token,
       });
     } catch (err) {
-      res.status(400).send(err);
+      console.log(err);
+      res.status(500).send({ success: false, err });
     }
   },
 
@@ -194,7 +196,8 @@ module.exports = {
         data: isAccountExist,
       });
     } catch (err) {
-      res.status(400).send(err);
+      console.log(err);
+      res.status(500).send({ success: false, err });
     }
   },
 
@@ -228,13 +231,13 @@ module.exports = {
         data: isAccountExist,
       });
     } catch (err) {
-      res.status(400).send(err);
+      res.status(500).send({ success: false, err });
     }
   },
 
   secondVerification: async (req, res) => {
     try {
-      const { email } = req.body;
+      const { email, FE_URL } = req.body;
       const response = await user.findOne({
         where: {
           email: email,
@@ -254,7 +257,7 @@ module.exports = {
       );
       const tempCompile = handlebars.compile(tempEmail);
       const tempResult = tempCompile({
-        link: `http://localhost:3000/verification/${token}`,
+        link: `${FE_URL || "http://localhost:3000"}/verification/${token}`,
       });
       await transporter.sendMail({
         from: "Purwadhika Team",
@@ -267,13 +270,13 @@ module.exports = {
         token,
       });
     } catch (err) {
-      res.status(400).send(err);
+      res.status(500).send({ success: false, err });
     }
   },
 
   changeEmail: async (req, res) => {
     try {
-      const { currentEmail, newEmail } = req.body;
+      const { currentEmail, newEmail, FE_URL } = req.body;
       const isAccountExist = await user.findOne({
         where: {
           id: req.user.id,
@@ -307,7 +310,7 @@ module.exports = {
       );
       const tempCompile = handlebars.compile(tempEmail);
       const tempResult = tempCompile({
-        link: `http://localhost:3000/verification-change-email/${token}`,
+        link: `${FE_URL || "http://localhost:3000"}/verification-change-email/${token}`,
       });
       await transporter.sendMail({
         from: "Purwadhika Team",
@@ -321,13 +324,13 @@ module.exports = {
         token,
       });
     } catch (err) {
-      res.status(400).send(err);
+      res.status(500).send({ success: false, err });
     }
   },
 
   changeUsername: async (req, res) => {
     try {
-      const { currentUsername, newUsername } = req.body;
+      const { currentUsername, newUsername, FE_URL } = req.body;
       const isAccountExist = await user.findOne({
         where: {
           id: req.user.id,
@@ -361,7 +364,7 @@ module.exports = {
       );
       const tempCompile = handlebars.compile(tempEmail);
       const tempResult = tempCompile({
-        link: `http://localhost:3000/verification-change-email/${token}`,
+        link: `${FE_URL || "http://localhost:3000"}/verification-change-email/${token}`,
       });
       await transporter.sendMail({
         from: "Purwadhika Team",
@@ -375,13 +378,13 @@ module.exports = {
         token,
       });
     } catch (err) {
-      res.status(400).send(err);
+      res.status(500).send({ success: false, err });
     }
   },
 
   changePhone: async (req, res) => {
     try {
-      const { currentPhone, newPhone } = req.body;
+      const { currentPhone, newPhone, FE_URL } = req.body;
       const isAccountExist = await user.findOne({
         where: {
           id: req.user.id,
@@ -415,7 +418,7 @@ module.exports = {
       );
       const tempCompile = handlebars.compile(tempEmail);
       const tempResult = tempCompile({
-        link: `http://localhost:3000/verification-change-email/${token}`,
+        link: `${FE_URL || "http://localhost:3000"}/verification-change-email/${token}`,
       });
       await transporter.sendMail({
         from: "Purwadhika Team",
@@ -428,7 +431,7 @@ module.exports = {
         data,
       });
     } catch (err) {
-      res.status(400).send(err);
+      res.status(500).send({ success: false, err });
     }
   },
 

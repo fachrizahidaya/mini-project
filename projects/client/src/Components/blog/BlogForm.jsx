@@ -1,7 +1,7 @@
 import { Box, Button, Flex, Stack } from "@chakra-ui/react";
 import { Formik, Form } from "formik";
 import { AddPicBlog } from "./AddPic";
-import { FieldBlog, FielSelectdBlog } from "./FieldBlog";
+import { FieldBlog, FielSelectdBlog } from "./FIeldBlog";
 import { TextEditor } from "./TextEditor";
 import * as Yup from "yup";
 import { KeyrwordForm } from "./KeywordForm";

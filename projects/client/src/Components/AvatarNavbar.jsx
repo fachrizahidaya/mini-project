@@ -34,7 +34,7 @@ export const AvatarNavbar = () => {
           <Avatar
             size={{ base: "sm", md: "md" }}
             src={
-              `http://localhost:8000/${imgProfile}` ||
+              `${process.env.REACT_APP_API_PUBLIC_URL}/${imgProfile}` ||
               "https://bit.ly/broken-link"
             }
           />
