@@ -35,7 +35,7 @@ export const CardBlogEdited = ({ data }) => {
           bg={"gray.100"}
           h={{ xl: "200px", base: "250px" }}
           borderRadius="xl"
-          backgroundImage={`url(http://localhost:8000/${imageURL})`}
+          backgroundImage={`url(${process.env.REACT_APP_API_PUBLIC_URL}/${imageURL})`}
           backgroundRepeat="no-repeat"
           backgroundSize="cover"
           backgroundPosition={"center center"}
@@ -65,7 +65,7 @@ export const CardBlogEdited = ({ data }) => {
         </Stack>
         <Stack m={2} direction={"row"} spacing={4} align={"center"}>
           <Avatar
-            src={`http://localhost:8000/${User.imgProfile}`}
+            src={`${process.env.REACT_APP_API_PUBLIC_URL}/${User.imgProfile}`}
             alt={"Author"}
             size="sm"
           />

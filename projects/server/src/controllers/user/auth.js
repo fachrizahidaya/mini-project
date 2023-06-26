@@ -39,7 +39,7 @@ module.exports = {
       );
       const tempCompile = handlebars.compile(tempEmail);
       const tempResult = tempCompile({
-        link: `${FE_URL}/verification/${token}`,
+        link: `${FE_URL || "http://localhost:3000"}/verification/${token}`,
       });
       await transporter.sendMail({
         from: "Purwadhika Team",
@@ -153,7 +153,7 @@ module.exports = {
       const tempCompile = handlebars.compile(tempEmail);
       const tempResult = tempCompile({
         email: isAccountExist.email,
-        link1: `${FE_URL}/reset-password/${token}`,
+        link1: `${FE_URL || "http://localhost:3000"}/reset-password/${token}`,
       });
       await transporter.sendMail({
         from: "Admin",
@@ -257,7 +257,7 @@ module.exports = {
       );
       const tempCompile = handlebars.compile(tempEmail);
       const tempResult = tempCompile({
-        link: `${FE_URL}/verification/${token}`,
+        link: `${FE_URL || "http://localhost:3000"}/verification/${token}`,
       });
       await transporter.sendMail({
         from: "Purwadhika Team",
@@ -310,7 +310,7 @@ module.exports = {
       );
       const tempCompile = handlebars.compile(tempEmail);
       const tempResult = tempCompile({
-        link: `${FE_URL}/verification-change-email/${token}`,
+        link: `${FE_URL || "http://localhost:3000"}/verification-change-email/${token}`,
       });
       await transporter.sendMail({
         from: "Purwadhika Team",
@@ -364,7 +364,7 @@ module.exports = {
       );
       const tempCompile = handlebars.compile(tempEmail);
       const tempResult = tempCompile({
-        link: `${FE_URL}/verification-change-email/${token}`,
+        link: `${FE_URL || "http://localhost:3000"}/verification-change-email/${token}`,
       });
       await transporter.sendMail({
         from: "Purwadhika Team",
@@ -418,7 +418,7 @@ module.exports = {
       );
       const tempCompile = handlebars.compile(tempEmail);
       const tempResult = tempCompile({
-        link: `${FE_URL}/verification-change-email/${token}`,
+        link: `${FE_URL || "http://localhost:3000"}/verification-change-email/${token}`,
       });
       await transporter.sendMail({
         from: "Purwadhika Team",
