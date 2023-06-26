@@ -66,7 +66,7 @@ export const PopularArticle = () => {
           ({ imageURL, title, createdAt, id, Category, User }, index) => {
             return (
               <HStack w="full" p="3" key={index} cursor="pointer">
-                <Avatar src={`http://localhost:8000/${imageURL}`} />
+                <Avatar src={`${process.env.REACT_APP_API_PUBLIC_URL}/${imageURL}`} />
                 <Box
                   borderBottom="1px"
                   borderBottomColor="gray.200"

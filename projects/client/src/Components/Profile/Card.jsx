@@ -57,7 +57,7 @@ export const ProfileCard = () => {
         p={4}
         textAlign={"center"}
       >
-        <Avatar size={"xl"} src={`http://localhost:8000/${imgProfile}` || "https://bit.ly/broken-link"} />
+        <Avatar size={"xl"} src={`${process.env.REACT_APP_API_PUBLIC_URL}/${imgProfile}` || "https://bit.ly/broken-link"} />
         <Heading mt="4" fontSize={"2xl"}>
           {username}
         </Heading>

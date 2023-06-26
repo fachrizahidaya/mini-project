@@ -30,7 +30,7 @@ export const CoverHome = () => {
             maxW={"750px"}
             w={"full"}
             h={{ xl: "inherit", md: "inherit", sm: "400px", base: "300px" }}
-            backgroundImage={`url(http://localhost:8000/${imageURL})`}
+            backgroundImage={`url(${process.env.REACT_APP_API_PUBLIC_URL}/${imageURL})`}
             backgroundRepeat="no-repeat"
             backgroundSize="cover"
             backgroundPosition={"center center"}
