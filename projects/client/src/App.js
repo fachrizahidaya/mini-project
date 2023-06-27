@@ -1,26 +1,27 @@
-import { useEffect } from "react";
-import { useDispatch } from "react-redux";
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import AfterAuth from "./components/AfterAuth";
-import { ArticleList } from "./components/listBlog/ArticleList";
-import { ChangePass } from "./components/profile/ChangePass";
-import { MyArticleList } from "./components/profile/MyArticleList";
-import { UpdateProfile } from "./components/profile/UpdateProfile";
-import RequireAuth from "./components/RequireAuth";
-import { axios } from "./helper/axios";
-import { BlogPage } from "./pages/Blog";
-import { BlogDetail } from "./pages/BlogDetail";
-import { CreateBlog } from "./pages/CreateBlog";
-import { ErrorPage } from "./pages/Error";
-import { HomePage } from "./pages/Home";
-import { LoginForm } from "./pages/Login";
-import { Profile } from "./pages/Profile";
-import { RegistrationForm } from "./pages/Register";
-import { ResetPass } from "./pages/ResetPass";
-import { Search } from "./pages/Search";
-import { Verification } from "./pages/Verification";
-import { VerifyForm } from "./pages/VerifyForm";
-import { setAuth } from "./redux/userSlice";
+import { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import AfterAuth from './Components/AfterAuth';
+import { ArticleList } from './Components/ListBlog/ArticleList';
+import { ChangePass } from './Components/Profile/ChangePass';
+import { MyArticleList } from './Components/Profile/MyArticleList';
+import { UpdateProfile } from './Components/Profile/UpdateProfile';
+import RequireAuth from './Components/RequireAuth';
+import { axios } from './helper/axios';
+import { BlogPage } from './Pages/Blog';
+import { BlogDetail } from './Pages/BlogDetail';
+import { CreateBlog } from './Pages/CreateBlog';
+import { ErrorPage } from './Pages/Error';
+import { HomePage } from './Pages/Home';
+import { LoginForm } from './Pages/Login';
+import { Profile } from './Pages/Profile';
+import { RegistrationForm } from './Pages/Register';
+import { ResetPass } from './Pages/ResetPass';
+import { Search } from './Pages/Search';
+import { Verification } from './Pages/Verification';
+import { VerifyForm } from './Pages/VerifyForm';
+import { setAuth } from './redux/userSlice';
+
 
 const router = createBrowserRouter([
   {

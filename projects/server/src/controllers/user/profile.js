@@ -42,7 +42,7 @@ module.exports = {
         imgProfile: getProfile.imgProfile,
       });
     } catch (err) {
-      res.status(400).send(err);
+      res.status(500).send({success : false, err});
     }
   },
 };

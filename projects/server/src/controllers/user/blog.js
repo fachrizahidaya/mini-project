@@ -13,7 +13,9 @@ const youtubeThumbnail = require(local);
 module.exports = {
   create: async (req, res) => {
     try {
-      const { title, content, CategoryId, url, keywords, country } = req.body;
+      const { title, content, CategoryId, url, keywords, country } = JSON.parse(
+        req.body.data
+      );
       const allowedTypes = [
         "image/jpg",
         "image/jpeg",
@@ -89,7 +91,7 @@ module.exports = {
         data: result,
       });
     } catch (err) {
-      res.status(400).send(err);
+      res.status(500).send({ success: false, err });
     }
   },
 
@@ -132,7 +134,7 @@ module.exports = {
         image: getImg.imageURL,
       });
     } catch (err) {
-      res.status(400).send(err);
+      res.status(500).send({ success: false, err });
     }
   },
 
@@ -162,7 +164,7 @@ module.exports = {
 
       res.status(200).send("Like added");
     } catch (err) {
-      res.status(400).send(err);
+      res.status(500).send({ success: false, err });
     }
   },
 
@@ -193,7 +195,7 @@ module.exports = {
       });
       res.status(200).send(data);
     } catch (err) {
-      res.status(400).send(err);
+      res.status(500).send({ success: false, err });
     }
   },
 
@@ -231,7 +233,7 @@ module.exports = {
       });
       res.status(200).send(data);
     } catch (err) {
-      res.status(400).send(err);
+      res.status(500).send({ success: false, err });
     }
   },
 
@@ -246,7 +248,7 @@ module.exports = {
       });
       res.status(200).send(data);
     } catch (err) {
-      res.status(400).send(err);
+      res.status(500).send({ success: false, err });
     }
   },
 
@@ -273,6 +275,9 @@ module.exports = {
             },
             {
               title: { [Op.like]: `%${search1}%` },
+            },
+            {
+              isDeleted: false,
             },
           ],
         },
@@ -320,7 +325,7 @@ module.exports = {
         result,
       });
     } catch (err) {
-      res.status(400).send(err);
+      res.status(500).send({ success: false, err });
     }
   },
 
@@ -335,13 +340,15 @@ module.exports = {
       const start = (page1 - 1) * size1;
       const condition = page1 * start;
       const result = await like.findAll({
-        attributes: ["id"],
+        // attributes: ["id"],
+        where: {
+          UserId: req.user.id,
+        },
         include: [
           {
             model: blog,
             attributes: ["title", "content"],
             where: {
-              UserId: idUser,
               title: { [Op.like]: `%${search1}%` },
               CategoryId: { [Op.like]: `%${cat1}%` },
             },
@@ -382,6 +389,7 @@ module.exports = {
         result,
       });
     } catch (err) {
+      res.status(500).send({ success: false, err });
       res.status(400).send(err);
     }
   },
@@ -492,7 +500,7 @@ module.exports = {
       let thumbVid = thumbnail.default.url;
       res.status(200).send({ response, data: thumbVid });
     } catch (err) {
-      res.status(400).send(err);
+      res.status(500).send({ success: false, err });
     }
   },
 
@@ -510,7 +518,7 @@ module.exports = {
       );
       res.status(200).send("Successfully deleted");
     } catch (err) {
-      res.status(400).send(err);
+      res.status(500).send({ success: false, err });
     }
   },
 
@@ -518,13 +526,13 @@ module.exports = {
     try {
       const data = await like.destroy({
         where: {
-          UserId: req.params.id,
+          UserId: req.user.id,
           BlogId: req.params.idBlog,
         },
       });
       res.status(200).send("Successfully deleted");
     } catch (err) {
-      res.status(400).send(err);
+      res.status(500).send({ success: false, err });
     }
   },
 
@@ -551,7 +559,7 @@ module.exports = {
       });
       res.status(200).send(edit);
     } catch (err) {
-      res.status(400).send(err);
+      res.status(500).send({ success: false, err });
     }
   },
 
@@ -562,7 +570,114 @@ module.exports = {
       });
       res.status(200).send(data);
     } catch (err) {
-      res.status(400).send(err);
+      res.status(500).send({ success: false, err });
+    }
+  },
+
+  pagFavorite: async (req, res) => {
+    try {
+      const { id_cat, search, sort, size, id_key, page, orderBy } = req.query;
+      const cat1 = id_cat || "";
+      const orderBy1 = orderBy || "id";
+      const sort1 = sort || "DESC";
+      const page1 = parseInt(page) || 1;
+      const size1 = parseInt(size) || 8;
+      const search1 = search || "";
+      const start = (page1 - 1) * size1;
+
+      const likes = await like.findAll();
+      const result = await blog.findAll({
+        where: {
+          [Op.and]: [
+            {
+              CategoryId: {
+                [Op.like]: `%${cat1}%`,
+              },
+            },
+            {
+              title: { [Op.like]: `%${search1}%` },
+            },
+            {
+              isDeleted: false,
+            },
+          ],
+        },
+        include: [
+          {
+            model: user,
+            attributes: ["username", "imgProfile"],
+          },
+          {
+            model: category,
+            attributes: ["id", "name"],
+          },
+          {
+            model: blogKeyword,
+            include: [
+              {
+                model: keyword,
+                where: {
+                  // name: {
+                  //   [Op.like]: `%${search1}%`,
+                  // },
+                },
+                required: false,
+              },
+            ],
+            required: false,
+          },
+          {
+            model: like,
+            attributes: ["id", "BlogId"],
+            include: [
+              {
+                model: user,
+                attributes: ["username"],
+                required: false,
+              },
+            ],
+          },
+        ],
+        attributes: {
+          include: [
+            [Sequelize.fn("count", Sequelize.col("Likes.BlogId")), "total_fav"],
+          ],
+          exclude: ["UserId"],
+        },
+        group: ["id"],
+        order: [[Sequelize.literal(orderBy1), `${sort1}`]],
+        limit: size1,
+        offset: start,
+        subQuery: false,
+        required: false,
+      });
+      const totalRows = await blog.count({
+        where: {
+          [Op.and]: [
+            {
+              CategoryId: {
+                [Op.like]: `%${cat1}%`,
+              },
+            },
+            {
+              title: { [Op.like]: `%${search1}%` },
+            },
+            {
+              isDeleted: false,
+            },
+          ],
+        },
+      });
+      const totalPage = Math.ceil(totalRows / size1);
+      res.status(200).send({
+        page: totalPage,
+        rows: totalRows,
+        blogPage: page1,
+        listLimit: size1,
+        result,
+      });
+    } catch (err) {
+      res.status(500).send({ success: false, err });
     }
   },
 
@@ -610,9 +725,9 @@ module.exports = {
               {
                 model: keyword,
                 where: {
-                  name: {
-                    [Op.like]: `%${search1}%`,
-                  },
+                  // name: {
+                  //   [Op.like]: `%${search1}%`,
+                  // },
                 },
                 required: false,
               },
@@ -647,7 +762,7 @@ module.exports = {
         result,
       });
     } catch (err) {
-      res.status(400).send(err);
+      res.status(500).send({ success: false, err });
     }
   },
 
@@ -731,7 +846,7 @@ module.exports = {
         result,
       });
     } catch (err) {
-      res.status(400).send(err);
+      res.status(500).send({ success: false, err });
     }
   },
 
@@ -743,7 +858,7 @@ module.exports = {
       });
       res.status(200).send(result);
     } catch (err) {
-      res.status(400).send(err);
+      res.status(500).send({ success: false, err });
     }
   },
 
@@ -754,7 +869,7 @@ module.exports = {
       });
       res.status(200).send(data);
     } catch (err) {
-      res.status(400).send(err);
+      res.status(500).send({ success: false, err });
     }
   },
 };

@@ -33,7 +33,7 @@ export const UpdateProfilePic = () => {
       const data = new FormData();
       data.append("userId", 1);
       data.append("file", image);
-      await axios.post("/profile/single-uploaded", data, {
+      await axios.post("/Profile/single-uploaded", data, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -48,7 +48,7 @@ export const UpdateProfilePic = () => {
     <Formik
       initialValues={{
         file: `${
-          `http://localhost:8000/${imgProfile}` || "https://bit.ly/broken-link"
+          `${process.env.REACT_APP_API_PUBLIC_URL}/${imgProfile}` || "https://bit.ly/broken-link"
         }`,
       }}
       validationSchema={validationSchema}

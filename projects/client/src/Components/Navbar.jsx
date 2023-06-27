@@ -73,9 +73,9 @@ export const Navbar = () => {
                   color="white"
                   _hover={{ color: "orange" }}
                   variant="ghost"
-                  onClick={() => navigate("/landing")}
+                  onClick={() => navigate("/")}
                 >
-                  Product
+                  All Blog
                 </Button>
                 <Button
                   color="white"
@@ -182,11 +182,11 @@ export const Navbar = () => {
                       _hover={{ color: "orange" }}
                       variant="ghost"
                       onClick={() => {
-                        navigate("/landing");
+                        navigate("/");
                         onClose();
                       }}
                     >
-                      Product
+                      All Blog
                     </Button>
                     <Button
                       color="white"

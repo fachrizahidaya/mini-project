@@ -1,10 +1,10 @@
-require("dotenv/config");
+const path = require("path");
+require('dotenv').config({path:path.join(__dirname,'../.env')});
 const express = require("express");
 const cors = require("cors");
 const { join } = require("path");
 const db = require("./models");
 const bearerToken = require("express-bearer-token");
-const path = require("path");
 const imgMiddleware = require("./middleware/multer");
 const bodyParser = require("body-parser");
 
