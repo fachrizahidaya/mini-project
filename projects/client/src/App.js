@@ -1,91 +1,91 @@
-import { useEffect } from 'react';
-import { useDispatch } from 'react-redux';
-import { createBrowserRouter, RouterProvider } from 'react-router-dom';
-import AfterAuth from './components/AfterAuth';
-import { ArticleList } from './components/listBlog/ArticleList';
-import { ChangePass } from './components/profile/ChangePass';
-import { MyArticleList } from './components/profile/MyArticleList';
-import { UpdateProfile } from './components/profile/UpdateProfile';
-import RequireAuth from './components/RequireAuth';
-import { axios } from './helper/axios';
-import { BlogPage } from './pages/Blog';
-import { BlogDetail } from './pages/BlogDetail';
-import { CreateBlog } from './pages/CreateBlog';
-import { ErrorPage } from './pages/Error';
-import { HomePage } from './pages/Home';
-import { LoginForm } from './pages/Login';
-import { Profile } from './pages/Profile';
-import { RegistrationForm } from './pages/Register';
-import { ResetPass } from './pages/ResetPass';
-import { Search } from './pages/Search';
-import { Verification } from './pages/Verification';
-import { VerifyForm } from './pages/VerifyForm';
-import { setAuth } from './redux/userSlice';
+import { useEffect } from "react";
+import { useDispatch } from "react-redux";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import AfterAuth from "./components/AfterAuth";
+import { ArticleList } from "./components/listBlog/ArticleList";
+import { ChangePass } from "./components/profile/ChangePass";
+import { MyArticleList } from "./components/profile/MyArticleList";
+import { UpdateProfile } from "./components/profile/UpdateProfile";
+import RequireAuth from "./components/RequireAuth";
+import { axios } from "./helper/axios";
+import { BlogPage } from "./pages/Blog";
+import { BlogDetail } from "./pages/BlogDetail";
+import { CreateBlog } from "./pages/CreateBlog";
+import { ErrorPage } from "./pages/Error";
+import { HomePage } from "./pages/Home";
+import { LoginForm } from "./pages/Login";
+import { Profile } from "./pages/Profile";
+import { RegistrationForm } from "./pages/Register";
+import { ResetPass } from "./pages/ResetPass";
+import { Search } from "./pages/Search";
+import { Verification } from "./pages/Verification";
+import { VerifyForm } from "./pages/VerifyForm";
+import { setAuth } from "./redux/userSlice";
 
 const router = createBrowserRouter([
   {
-    path: '/',
+    path: "/",
     element: <HomePage />,
     errorElement: <ErrorPage />,
     children: [
-      { path: '/', element: <BlogPage/> },
-      { path: '/blog', element: <BlogDetail/> },
-      { path: '/search', element: <Search/> },
+      { path: "/", element: <BlogPage /> },
+      { path: "/blog", element: <BlogDetail /> },
+      { path: "/search", element: <Search /> },
       {
         // halaman diakses harus login
         element: <RequireAuth />,
         children: [
-          { path: '/create', element: <CreateBlog/> },
-          { path: '/account',
-          element: <Profile/>,
-          children: [
-              { path: '/account/my-article', element: <MyArticleList/> },
-              { path: '/account/favorite-article', element: <ArticleList/> },
-              { path: '/account/profile-setting', element: <UpdateProfile/> },
-              { path: '/account/change-password', element: <ChangePass/> },
-            ] 
+          { path: "/create", element: <CreateBlog /> },
+          {
+            path: "/account",
+            element: <Profile />,
+            children: [
+              { path: "/account/my-article", element: <MyArticleList /> },
+              { path: "/account/favorite-article", element: <ArticleList /> },
+              { path: "/account/profile-setting", element: <UpdateProfile /> },
+              { path: "/account/change-password", element: <ChangePass /> },
+            ],
           },
-        ]
+        ],
       },
-    ]
+    ],
   },
 
   // halaman setelah login gaboleh akses
   {
     element: <AfterAuth />,
     children: [
-      { path: '/login', element: <LoginForm /> },
-      { path: '/register', element: <RegistrationForm /> },
-      { path: '/verify', element: <VerifyForm /> },
-      { path: '/reset-password', element: <ResetPass /> },
-      { path: '/verification/:token', element: <Verification /> },
-    ]
-  }
+      { path: "/login", element: <LoginForm /> },
+      { path: "/register", element: <RegistrationForm /> },
+      { path: "/verify", element: <VerifyForm /> },
+      { path: "/reset-password", element: <ResetPass /> },
+      { path: "/verification/:token", element: <Verification /> },
+    ],
+  },
 ]);
 
 function App() {
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
   const token = localStorage.getItem("token");
 
   const keepLogin = async () => {
     try {
-      const res = await axios.get('/auth', {
+      const res = await axios.get("/auth", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
-      })
-      const { username, email, phone, imgProfile } = res.data
+      });
+      const { username, email, phone, imgProfile } = res.data;
       dispatch(setAuth({ username, email, phone, imgProfile }));
-
     } catch (err) {
       console.log(err);
     }
-  }
+  };
 
   useEffect(() => {
     token ? keepLogin() : console.log("Login First");
-  }, [])
-  
+  }, []);
+
   return (
     <main>
       <RouterProvider router={router} />
