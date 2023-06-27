@@ -524,9 +524,9 @@ module.exports = {
               {
                 model: keyword,
                 where: {
-                  name: {
-                    [Op.like]: `%${search1}%`,
-                  },
+                  // name: {
+                  //   [Op.like]: `%${search1}%`,
+                  // },
                 },
                 required: false,
               },
