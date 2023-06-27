@@ -11,6 +11,7 @@ router.get("/", blog.pagBlog);
 router.get("/auth", verifyToken, blog.pagBlogLogin);
 router.post("/", verifyToken, multerBlogUpload.single("file"), blog.create);
 router.post("/like", verifyToken, blog.like);
+router.delete("/unlike/:idBlog", verifyToken, blog.unlike);
 router.post("/category", blog.createCategory);
 router.patch("/remove/:id", blog.remove);
 router.patch("/update/:id", blog.update);
@@ -20,7 +21,6 @@ router.get("/pagLike", verifyToken, blog.pagLike);
 router.get("/pagFav", blog.pagFavorite);
 router.get("/allCategory", blog.allCategory);
 router.get("/vidThumb/:id", blog.videoThumb);
-router.delete("/unlike/:idBlog", verifyToken, blog.unlike);
 router.get("/auth/:id", verifyToken, blog.findByIdAuth);
 router.get("/:id", blog.findById);
 

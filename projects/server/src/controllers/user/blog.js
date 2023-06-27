@@ -394,115 +394,6 @@ module.exports = {
     }
   },
 
-  pagFavorite: async (req, res) => {
-    try {
-      const { id_cat, search, sort, size, id_key, page, orderBy } = req.query;
-      const cat1 = id_cat || "";
-      const orderBy1 = orderBy || "id";
-      const sort1 = sort || "DESC";
-      const page1 = parseInt(page) || 1;
-      const size1 = parseInt(size) || 8;
-      const search1 = search || "";
-      const start = (page1 - 1) * size1;
-
-      const likes = await like.findAll();
-      const result = await blog.findAll({
-        include: [
-          {
-            model: user,
-            attributes: ["username", "imgProfile"],
-          },
-          {
-            model: category,
-            attributes: ["id", "name"],
-          },
-          {
-            model: blogKeyword,
-            include: [
-              {
-                model: keyword,
-                where: {
-                  name: {
-                    [Op.like]: `%${search1}%`,
-                  },
-                },
-                required: false,
-              },
-            ],
-            required: false,
-          },
-          {
-            model: like,
-            attributes: ["id", "BlogId"],
-            include: [
-              {
-                model: user,
-                attributes: ["username"],
-                required: false,
-              },
-            ],
-          },
-        ],
-        attributes: {
-          include: [
-            [Sequelize.fn("count", Sequelize.col("Likes.BlogId")), "total_fav"],
-          ],
-          exclude:["UserId"]
-        },
-        where: {
-          [Op.and]: [
-            [
-              {
-                CategoryId: {
-                  [Op.like]: "%%",
-                },
-              },
-              {
-                title: {
-                  [Op.like]: "%%",
-                },
-              },
-              {
-                isDeleted: false,
-              },
-            ],
-          ],
-        },
-        group: ["id"],
-        order: [[Sequelize.literal(orderBy1), `${sort1}`]],
-        limit: size1,
-        offset: start,
-        subQuery: false,
-        required: false,
-      });
-      const totalRows = await like.count({
-        attributes: ["id", "BlogId"],
-        where: {
-          UserId: req.query.UserId || { [Op.not]: null },
-        },
-        include: [
-          {
-            model: blog,
-            where: {
-              isDeleted: false,
-            },
-          },
-        ],
-        // required: false,
-      });
-      const totalPage = Math.ceil(totalRows / size1);
-      res.status(200).send({
-        page: totalPage,
-        rows: totalRows,
-        blogPage: page1,
-        listLimit: size1,
-        result,
-      });
-    } catch (err) {
-      res.status(500).send({ success: false, err });
-    }
-  },
-
   videoThumb: async (req, res) => {
     try {
       const response = await blog.findOne({
@@ -590,6 +481,113 @@ module.exports = {
     }
   },
 
+  pagFavorite: async (req, res) => {
+    try {
+      const { id_cat, search, sort, size, id_key, page, orderBy } = req.query;
+      const cat1 = id_cat || "";
+      const orderBy1 = orderBy || "id";
+      const sort1 = sort || "DESC";
+      const page1 = parseInt(page) || 1;
+      const size1 = parseInt(size) || 8;
+      const search1 = search || "";
+      const start = (page1 - 1) * size1;
+
+      const likes = await like.findAll();
+      const result = await blog.findAll({
+        where: {
+          [Op.and]: [
+            {
+              CategoryId: {
+                [Op.like]: `%${cat1}%`,
+              },
+            },
+            {
+              title: { [Op.like]: `%${search1}%` },
+            },
+            {
+              isDeleted: false,
+            },
+          ],
+        },
+        include: [
+          {
+            model: user,
+            attributes: ["username", "imgProfile"],
+          },
+          {
+            model: category,
+            attributes: ["id", "name"],
+          },
+          {
+            model: blogKeyword,
+            include: [
+              {
+                model: keyword,
+                where: {
+                  name: {
+                    [Op.like]: `%${search1}%`,
+                  },
+                },
+                required: false,
+              },
+            ],
+            required: false,
+          },
+          {
+            model: like,
+            attributes: ["id", "BlogId"],
+            include: [
+              {
+                model: user,
+                attributes: ["username"],
+                required: false,
+              },
+            ],
+          },
+        ],
+        attributes: {
+          include: [
+            [Sequelize.fn("count", Sequelize.col("Likes.BlogId")), "total_fav"],
+          ],
+          exclude: ["UserId"],
+        },
+        group: ["id"],
+        order: [[Sequelize.literal(orderBy1), `${sort1}`]],
+        limit: size1,
+        offset: start,
+        subQuery: false,
+        required: false,
+      });
+      const totalRows = await blog.count({
+        where: {
+          [Op.and]: [
+            {
+              CategoryId: {
+                [Op.like]: `%${cat1}%`,
+              },
+            },
+            {
+              title: { [Op.like]: `%${search1}%` },
+            },
+            {
+              isDeleted: false,
+            },
+          ],
+        },
+      });
+      const totalPage = Math.ceil(totalRows / size1);
+      res.status(200).send({
+        page: totalPage,
+        rows: totalRows,
+        blogPage: page1,
+        listLimit: size1,
+        result,
+      });
+    } catch (err) {
+      res.status(500).send({ success: false, err });
+    }
+  },
+
   pagBlog: async (req, res) => {
     try {
       const { id_cat, search, sort, size, page, sortBy } = req.query;
@@ -634,9 +632,9 @@ module.exports = {
               {
                 model: keyword,
                 where: {
-                  name: {
-                    [Op.like]: `%${search1}%`,
-                  },
+                  // name: {
+                  //   [Op.like]: `%${search1}%`,
+                  // },
                 },
                 required: false,
               },
