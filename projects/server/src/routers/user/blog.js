@@ -1,10 +1,6 @@
 const router = require("express").Router();
 const { blog } = require("../../controllers/index");
 const { multerBlogUpload } = require("../../middleware/multerBlog");
-const {
-  validationBlog,
-  runValidation,
-} = require("../../middleware/validation");
 const { verifyToken } = require("../../middleware/verifyToken");
 
 router.get("/", blog.pagBlog);

@@ -1,5 +1,4 @@
 const { Op, Sequelize } = require("sequelize");
-const { sequelize } = require("../../models");
 const db = require("../../models");
 const blog = db.Blog;
 const blogCategory = db.Blog_Category;
@@ -64,7 +63,7 @@ module.exports = {
         );
 
         await Promise.all(
-          keywords.split(" ").map(async (item) => {
+          keywords.split("  ").map(async (item) => {
             const [KeywordId, created] = await keyword.findOrCreate({
               where: {
                 name: item,
@@ -332,11 +331,11 @@ module.exports = {
 
   pagLike: async (req, res) => {
     try {
-      const { id_cat, idUser, search, sort } = req.query;
+      const { id_cat, idUser, search, sort, page, size } = req.query;
       const cat1 = id_cat || "";
       const sort1 = sort || "DESC";
-      const page1 = parseInt(req.query.page) || 1;
-      const size1 = parseInt(req.query.size) || 8;
+      const page1 = parseInt(page) || 1;
+      const size1 = parseInt(size) || 8;
       const search1 = search || "";
       const start = (page1 - 1) * size1;
       const condition = page1 * start;
@@ -391,6 +390,100 @@ module.exports = {
       });
     } catch (err) {
       res.status(500).send({ success: false, err });
+      res.status(400).send(err);
+    }
+  },
+
+  pagFavorite: async (req, res) => {
+    try {
+      const { id_cat, search, sort, size, id_key, page } = req.query;
+      const cat1 = id_cat || "";
+      const sort1 = sort || "DESC";
+      const page1 = parseInt(page) || 1;
+      const size1 = parseInt(size) || 8;
+      const search1 = search || "";
+      const start = (page1 - 1) * size1;
+
+      const likes = await like.findAll();
+      const result = await blog.findAll({
+        include: [
+          {
+            model: like,
+
+            attributes: ["id", "BlogId", "UserId"],
+            required: false,
+            include: [
+              {
+                model: user,
+                attributes: ["username"],
+                required: false,
+              },
+            ],
+          },
+          {
+            model: category,
+            attributes: ["name"],
+            required: false,
+          },
+        ],
+        attributes: [
+          "id",
+          [Sequelize.fn("count", Sequelize.col("likes.BlogId")), "total_fav"],
+          "title",
+        ],
+        where: {
+          [Op.and]: [
+            [
+              {
+                CategoryId: {
+                  [Op.like]: "%%",
+                },
+              },
+              {
+                title: {
+                  [Op.like]: "%%",
+                },
+              },
+              {
+                isDeleted: false,
+              },
+            ],
+          ],
+        },
+        group: ["id"],
+        order: [[Sequelize.literal("total_fav"), `${sort1}`]],
+        limit: size1,
+        offset: start,
+        subQuery: false,
+        required: false,
+      });
+      const totalRows = await blog.count({
+        where: {
+          [Op.and]: [
+            {
+              CategoryId: {
+                [Op.like]: `%${cat1}%`,
+              },
+            },
+            {
+              title: { [Op.like]: `%${search1}%` },
+            },
+            {
+              isDeleted: false,
+            },
+          ],
+        },
+      });
+      const totalPage = Math.ceil(totalRows / size1);
+      res.status(200).send({
+        page: totalPage,
+        rows: totalRows,
+        blogPage: page1,
+        listLimit: size1,
+        result,
+      });
+    } catch (err) {
+      res.status(400).send(err);
     }
   },
 
