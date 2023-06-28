@@ -416,7 +416,6 @@ module.exports = {
       const data = await user.update(
         {
           phone: newPhone,
-          isVerified: false,
         },
         {
           where: {
@@ -424,31 +423,23 @@ module.exports = {
           },
         }
       );
-      const payload = {
-        email: isAccountExist.email,
-        id: isAccountExist.id,
-        isVerified: isAccountExist.isVerified,
-      };
-      const token = jwt.sign(payload, secretKey, {
-        expiresIn: "1h",
-      });
+
       const tempEmail = fs.readFileSync(
-        path.join(__dirname, "../../template/re-verify.html"),
+        path.join(__dirname, "../../template/changePhone.html"),
         "utf-8"
       );
       const tempCompile = handlebars.compile(tempEmail);
       const tempResult = tempCompile({
-        link: `${FE_URL || "http://localhost:3000"}/verification-change-email/${token}`,
+        email: isAccountExist.email,
       });
       await transporter.sendMail({
         from: "Purwadhika Team",
         to: isAccountExist.email,
-        subject: "Change Phone Number Verification",
+        subject: "Phone Number Change",
         html: tempResult,
       });
       res.status(200).send({
-        message: "Please check your Email to verify your Account",
-        data,
+        message: "Phone Number Changed",
       });
     } catch (err) {
       res.status(500).send({ success: false, err });
