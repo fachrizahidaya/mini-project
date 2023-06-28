@@ -173,7 +173,7 @@ module.exports = {
 
   resetPassword: async (req, res) => {
     try {
-      const { password, confirmPassword, token } = req.body;
+      const { password, confirmPassword } = req.body;
       const isAccountExist = await user.findOne({
         where: {
           email: req.user.email,
@@ -191,6 +191,20 @@ module.exports = {
           },
         }
       );
+      const tempEmail = fs.readFileSync(
+        path.join(__dirname, "../../template/changePassword.html"),
+        "utf-8"
+      );
+      const tempCompile = handlebars.compile(tempEmail);
+      const tempResult = tempCompile({
+        email: isAccountExist.email,
+      });
+      await transporter.sendMail({
+        from: "Purwadhika Team",
+        to: req.user.email,
+        subject: "Password Change",
+        html: tempResult,
+      });
       res.status(200).send({
         message: "Please Login again",
         data: isAccountExist,
@@ -226,6 +240,20 @@ module.exports = {
           },
         }
       );
+      const tempEmail = fs.readFileSync(
+        path.join(__dirname, "../../template/changePassword.html"),
+        "utf-8"
+      );
+      const tempCompile = handlebars.compile(tempEmail);
+      const tempResult = tempCompile({
+        email: isAccountExist.email,
+      });
+      await transporter.sendMail({
+        from: "Purwadhika Team",
+        to: req.user.email,
+        subject: "Password Change",
+        html: tempResult,
+      });
       res.status(200).send({
         message: "Please Login again",
         data: isAccountExist,
@@ -310,7 +338,9 @@ module.exports = {
       );
       const tempCompile = handlebars.compile(tempEmail);
       const tempResult = tempCompile({
-        link: `${FE_URL || "http://localhost:3000"}/verification-change-email/${token}`,
+        link: `${
+          FE_URL || "http://localhost:3000"
+        }/verification-change-email/${token}`,
       });
       await transporter.sendMail({
         from: "Purwadhika Team",
@@ -342,7 +372,6 @@ module.exports = {
       const data = await user.update(
         {
           username: newUsername,
-          isVerified: false,
         },
         {
           where: {
@@ -350,32 +379,23 @@ module.exports = {
           },
         }
       );
-      const payload = {
-        email: isAccountExist.email,
-        id: isAccountExist.id,
-        isVerified: isAccountExist.isVerified,
-      };
-      const token = jwt.sign(payload, secretKey, {
-        expiresIn: "1h",
-      });
+
       const tempEmail = fs.readFileSync(
-        path.join(__dirname, "../../template/re-verify.html"),
+        path.join(__dirname, "../../template/changeUsername.html"),
         "utf-8"
       );
       const tempCompile = handlebars.compile(tempEmail);
       const tempResult = tempCompile({
-        link: `${FE_URL || "http://localhost:3000"}/verification-change-email/${token}`,
+        email: isAccountExist.email,
       });
       await transporter.sendMail({
         from: "Purwadhika Team",
-        to: isAccountExist.email,
-        subject: "Change Email Verification",
+        to: req.user.email,
+        subject: "Username Change",
         html: tempResult,
       });
       res.status(200).send({
-        message: "Please check your Email to verify your Account",
-        data,
-        token,
+        message: "Username changed",
       });
     } catch (err) {
       res.status(500).send({ success: false, err });
