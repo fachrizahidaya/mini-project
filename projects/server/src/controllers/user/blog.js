@@ -363,21 +363,9 @@ module.exports = {
         limit: size1,
         offset: start,
       });
-      const totalRows = await blog.count({
+      const totalRows = await like.count({
         where: {
-          [Op.and]: [
-            {
-              CategoryId: {
-                [Op.like]: `%${cat1}%`,
-              },
-            },
-            {
-              title: { [Op.like]: `%${search1}%` },
-            },
-            {
-              isDeleted: false,
-            },
-          ],
+          UserId: req.user.id,
         },
       });
       const totalPage = Math.ceil(totalRows / size1);
