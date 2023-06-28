@@ -259,7 +259,6 @@ module.exports = {
         data: isAccountExist,
       });
     } catch (err) {
-      console.log(err);
       res.status(500).send({ success: false, err });
     }
   },
@@ -439,9 +438,7 @@ module.exports = {
       );
       const tempCompile = handlebars.compile(tempEmail);
       const tempResult = tempCompile({
-        link: `${
-          FE_URL || "http://localhost:3000"
-        }/verification-change-email/${token}`,
+        link: `${FE_URL || "http://localhost:3000"}/verification-change-email/${token}`,
       });
       await transporter.sendMail({
         from: "Purwadhika Team",
