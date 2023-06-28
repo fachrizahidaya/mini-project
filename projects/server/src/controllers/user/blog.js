@@ -767,11 +767,12 @@ module.exports = {
 
   pagBlogLogin: async (req, res) => {
     try {
+      console.log(req.user);
       const { id_cat, search, sort, size, page, sortBy } = req.query;
-      const cat1 = id_cat;
+      const cat1 = id_cat || "";
       const sort1 = sort || "DESC";
       const sort2 = sortBy || "createdAt";
-      const page1 = parseInt(page) + 1 || 1;
+      const page1 = parseInt(page) || 1;
       const size1 = parseInt(size) || 8;
       const search1 = search || "";
       const start = (page1 - 1) * size1;
@@ -785,6 +786,9 @@ module.exports = {
             },
             {
               title: { [Op.like]: `%${search1}%` },
+            },
+            {
+              UserId: req.user.id,
             },
             {
               isDeleted: false,
@@ -810,9 +814,9 @@ module.exports = {
               {
                 model: keyword,
                 where: {
-                  name: {
-                    [Op.like]: `%${search}%`,
-                  },
+                  // name: {
+                  //   [Op.like]: `%${search}%`,
+                  // },
                 },
               },
             ],
@@ -829,6 +833,9 @@ module.exports = {
             },
             {
               title: { [Op.like]: `%${search1}%` },
+            },
+            {
+              UserId: req.user.id,
             },
             {
               isDeleted: false,
